@@ -1,0 +1,33 @@
+name: Publicar no de entrada (imagem Docker)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  imagem:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkgconf python3 libevent-dev libboost-dev libsqlite3-dev
+      - name: Configurar
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPC=OFF
+      - name: Compilar
+        run: cmake --build build -j $(nproc) --target bitcoind bitcoin-cli
+      - name: Montar a imagem
+        run: |
+          mkdir -p imagem
+          cp build/bin/rubianad build/bin/rubiana-cli imagem/
+          strip imagem/rubianad imagem/rubiana-cli
+          cp deploy/no/Dockerfile deploy/no/rubiana-start imagem/
+          docker build -t ghcr.io/${{ github.repository_owner }}/rubiana-no:latest imagem
+      - name: Entrar no registro do GitHub
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Publicar a imagem
+        run: docker push ghcr.io/${{ github.repository_owner }}/rubiana-no:latest
