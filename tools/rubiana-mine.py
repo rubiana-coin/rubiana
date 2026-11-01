@@ -10,6 +10,9 @@ import subprocess
 import sys
 import time
 
+# No de entrada da rede de teste (ponto de encontro dos mineradores)
+NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805"]
+
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 
@@ -38,6 +41,7 @@ if args.config and os.path.exists(args.config):
                 print("configuracao.txt: valor invalido em 'processadores' (use automatico ou um numero). Usando automatico.")
 
 flag = ["-" + args.rede]
+ADDNODES = ["-addnode=" + n for n in NOS_DE_ENTRADA] if args.rede == "testnet" else []
 EXT = ".exe" if os.name == "nt" else ""
 daemon = os.path.join(args.bin, "rubianad" + EXT)
 cli_path = os.path.join(args.bin, "rubiana-cli" + EXT)
@@ -67,9 +71,9 @@ code, out = cli("getblockcount")
 if code != 0 and "-28" not in out:
     print("iniciando o no...", flush=True)
     if os.name == "nt":
-        subprocess.Popen([daemon] + flag + ["-dnsseed=0", "-fixedseeds=0", "-listenonion=0"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000)
+        subprocess.Popen([daemon] + flag + ["-dnsseed=0", "-fixedseeds=0", "-listenonion=0"] + ADDNODES, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000)
     else:
-        subprocess.run([daemon] + flag + ["-daemon", "-dnsseed=0", "-fixedseeds=0", "-listenonion=0"], check=True)
+        subprocess.run([daemon] + flag + ["-daemon", "-dnsseed=0", "-fixedseeds=0", "-listenonion=0"] + ADDNODES, check=True)
     started = True
 
 t0 = time.time()
@@ -105,6 +109,29 @@ if not addr:
     open(arq, "w").write(addr + "\n")
 
 modo = "completo" if args.full else "leve"
+nconn = 0
+if ADDNODES:
+    print("conectando ao no de entrada da rede de teste...", flush=True)
+    for _ in range(30):
+        code, out = cli("getconnectioncount")
+        if code == 0 and out.isdigit() and int(out) > 0:
+            nconn = int(out)
+            break
+        time.sleep(1)
+    if nconn > 0:
+        print("conectado a rede de teste. Sincronizando blocos...", flush=True)
+        ultimo, parado, t1 = -1, 0, time.time()
+        while time.time() - t1 < 180 and parado < 5:
+            code, alt = cli("getblockcount")
+            if code == 0 and alt.isdigit():
+                if int(alt) == ultimo:
+                    parado += 1
+                else:
+                    ultimo, parado = int(alt), 0
+            time.sleep(2)
+        print("sincronizado, altura " + str(ultimo))
+    else:
+        print("AVISO: nao consegui conectar a rede de teste. Voce vai minerar sozinho, sem os outros.")
 print("endereco de mineracao: " + addr)
 print("seu computador tem " + str(os.cpu_count()) + " nucleos; usando " + str(args.threads) + " para minerar (" + origem + ").")
 print("minerando solo na " + args.rede + ": " + str(args.threads) + " thread(s), modo " + modo + ". Ctrl+C para parar.", flush=True)

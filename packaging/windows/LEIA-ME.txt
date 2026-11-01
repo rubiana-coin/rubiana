@@ -28,6 +28,11 @@ minerar.bat. Para escolher outro número, abra configuracao.txt (botão
 direito, "Abrir com", "Bloco de Notas"), troque a palavra da última
 linha por um número, salve com Ctrl+S e use minerar.bat.
 
+REDE
+O minerador se conecta ao nó de teste público da Rubiana para minerar
+junto com outras pessoas. Qualquer nó de uma rede pública vê o endereço
+IP de quem se conecta a ele.
+
 AVISOS
 - Programas de mineração costumam ser marcados como suspeitos por
   antivírus. Se o seu bloquear, não desative o antivírus: se você não
