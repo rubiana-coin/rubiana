@@ -190,7 +190,7 @@ public:
         bech32_hrp = "rubia";
         silent_payments_hrp = "sp";
 
-        vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_main), std::end(chainparams_seed_main));
+        vFixedSeeds.clear();
 
         fDefaultConsistencyChecks = false;
         m_is_mockable_chain = false;
@@ -273,7 +273,7 @@ public:
         bech32_hrp = "trubia";
         silent_payments_hrp = "tsp";
 
-        vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_test), std::end(chainparams_seed_test));
+        vFixedSeeds.clear();
 
         fDefaultConsistencyChecks = false;
         m_is_mockable_chain = false;
@@ -385,7 +385,7 @@ public:
         bech32_hrp = "tb";
         silent_payments_hrp = "tsp";
 
-        vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_testnet4), std::end(chainparams_seed_testnet4));
+        vFixedSeeds.clear();
 
         fDefaultConsistencyChecks = false;
         m_is_mockable_chain = false;
@@ -439,7 +439,7 @@ public:
 
         if (!options.challenge) {
             bin = kernel::SIGNET_DEFAULT_CHALLENGE;
-            vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_signet), std::end(chainparams_seed_signet));
+            vFixedSeeds.clear();
 
             consensus.nMinimumChainWork = uint256{};
             consensus.defaultAssumeValid = uint256{}; // 321295
