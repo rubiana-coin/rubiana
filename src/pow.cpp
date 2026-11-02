@@ -90,6 +90,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 // or decrease beyond the permitted limits.
 bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t height, uint32_t old_nbits, uint32_t new_nbits)
 {
+    // Com o LWMA a dificuldade muda a cada bloco; a regra exata e conferida em ContextualCheckBlockHeader.
+    if (!params.fPowNoRetargeting) return true;
     if (params.fPowAllowMinDifficultyBlocks) return true;
 
     if (height % params.DifficultyAdjustmentInterval() == 0) {
@@ -287,11 +289,12 @@ uint256 GetPoWHash(const CBlockHeader& block)
 static unsigned int GetNextWorkRequiredLWMA(const CBlockIndex* pindexLast, const Consensus::Params& params)
 {
     const int64_t T = params.nPowTargetSpacing; // 300 s
-    const int64_t N = 60;                       // janela de 60 blocos
+    int64_t N = 60;                       // janela de 60 blocos
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
-    // Poucos blocos ainda: mantem a dificuldade do genesis.
-    if (pindexLast->nHeight < N) return pindexLast->nBits;
+    // Primeiros 5 blocos: dificuldade inicial fixa; depois a janela cresce ate 60.
+    if (pindexLast->nHeight < 5) return params.nInitialPowBits ? params.nInitialPowBits : pindexLast->nBits;
+    if (pindexLast->nHeight < N) N = pindexLast->nHeight;
 
     const int64_t k = N * (N + 1) * T / 2;
     int64_t t = 0;

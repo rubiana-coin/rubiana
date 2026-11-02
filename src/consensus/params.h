@@ -121,6 +121,8 @@ struct Params {
       */
     bool enforce_BIP94;
     bool fPowNoRetargeting;
+    //! Dificuldade (nBits) dos primeiros blocos; 0 = mantem a do bloco inicial.
+    uint32_t nInitialPowBits{0};
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     std::chrono::seconds PowTargetSpacing() const
