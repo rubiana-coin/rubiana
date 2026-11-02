@@ -26,6 +26,9 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <stdexcept>
 #include <cstring>
 #include <iterator>
 #include <map>
@@ -66,9 +69,9 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  *     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
  *   vMerkleTree: 4a5e1e
  */
-static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const char* pszMensagem = nullptr)
 {
-    const char* pszTimestamp = "17/Oct/2026 Mineracao para todos, na palma da mao | BTC ~US$126 mil, 1 ano";
+    const char* pszTimestamp = pszMensagem ? pszMensagem : "17/Oct/2026 Mineracao para todos, na palma da mao | BTC ~US$126 mil, 1 ano";
     const CScript genesisOutputScript = CScript() << "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f"_hex << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -87,9 +90,22 @@ static CBlock MineGenesis(CBlock block)
     while (UintToArith256(GetPoWHash(block)) > target) {
         ++block.nNonce;
     }
-    if (FILE* f = fopen("/tmp/rubiana_genesis.txt", "w")) {
-        fprintf(f, "nonce=%u\nhash=%s\nmerkle=%s\n", block.nNonce, block.GetHash().ToString().c_str(), block.hashMerkleRoot.ToString().c_str());
-        fclose(f);
+    return block;
+}
+
+// Bloco inicial: valores fixos (nonce e hash). Se o hash vier vazio, ou se a variavel
+// RUBIANA_MINE_GENESIS=1 estiver ligada, o bloco e minerado e os valores sao impressos.
+static CBlock GenesisFixo(CBlock block, uint32_t nonce, const char* hash_hex)
+{
+    const char* minerar = std::getenv("RUBIANA_MINE_GENESIS");
+    if ((minerar && *minerar == '1') || hash_hex[0] == '\0') {
+        block = MineGenesis(block);
+        fprintf(stderr, "GENESIS nonce=%u hash=%s merkle=%s\n", block.nNonce, block.GetHash().ToString().c_str(), block.hashMerkleRoot.ToString().c_str());
+        return block;
+    }
+    block.nNonce = nonce;
+    if (block.GetHash().ToString() != hash_hex) {
+        throw std::runtime_error("o bloco inicial nao confere com o hash fixo do codigo");
     }
     return block;
 }
@@ -173,7 +189,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = MineGenesis(CreateGenesisBlock(1792195260, 0, 0x2000ffff, 1, 86 * COIN));
+        genesis = GenesisFixo(CreateGenesisBlock(1792195260, 0, 0x2000ffff, 1, 86 * COIN, "17/Oct/2026 Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         // Note that of those which support the service bits prefix, most only support a subset of
@@ -258,7 +274,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = MineGenesis(CreateGenesisBlock(1792195200, 0, 0x2000ffff, 1, 86 * COIN));
+        genesis = GenesisFixo(CreateGenesisBlock(1793577600, 0, 0x2000ffff, 1, 86 * COIN, "02/Nov/2026 Rubiana rede de teste | Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         vFixedSeeds.clear();
