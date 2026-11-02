@@ -95,12 +95,12 @@ static CBlock MineGenesis(CBlock block)
 
 // Bloco inicial: valores fixos (nonce e hash). Se o hash vier vazio, ou se a variavel
 // RUBIANA_MINE_GENESIS=1 estiver ligada, o bloco e minerado e os valores sao impressos.
-static CBlock GenesisFixo(CBlock block, uint32_t nonce, const char* hash_hex)
+static CBlock GenesisFixo(CBlock block, uint32_t nonce, const char* hash_hex, const char* rotulo)
 {
     const char* minerar = std::getenv("RUBIANA_MINE_GENESIS");
     if ((minerar && *minerar == '1') || hash_hex[0] == '\0') {
         block = MineGenesis(block);
-        fprintf(stderr, "GENESIS nonce=%u hash=%s merkle=%s\n", block.nNonce, block.GetHash().ToString().c_str(), block.hashMerkleRoot.ToString().c_str());
+        fprintf(stderr, "GENESIS[%s] nonce=%u hash=%s merkle=%s\n", rotulo, block.nNonce, block.GetHash().ToString().c_str(), block.hashMerkleRoot.ToString().c_str());
         return block;
     }
     block.nNonce = nonce;
@@ -189,7 +189,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = GenesisFixo(CreateGenesisBlock(1792195260, 0, 0x2000ffff, 1, 86 * COIN, "17/Oct/2026 Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6");
+        genesis = GenesisFixo(CreateGenesisBlock(1792195260, 0, 0x2000ffff, 1, 86 * COIN, "17/Oct/2026 Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6", "principal");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         // Note that of those which support the service bits prefix, most only support a subset of
@@ -274,7 +274,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = GenesisFixo(CreateGenesisBlock(1793577600, 0, 0x2000ffff, 1, 86 * COIN, "02/Nov/2026 Rubiana rede de teste | Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6");
+        genesis = GenesisFixo(CreateGenesisBlock(1793577600, 0, 0x2000ffff, 1, 86 * COIN, "02/Nov/2026 Rubiana rede de teste | Mineracao para todos, na palma da mao"), 175, "10029bed7cd8adf6ab7a04353df2e64f5620611565bc629c2790cb2c3a060706", "teste");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         vFixedSeeds.clear();
