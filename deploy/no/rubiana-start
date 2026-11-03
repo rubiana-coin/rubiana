@@ -1,3 +1,3 @@
 #!/bin/sh
-mkdir -p /data
-exec rubianad -testnet -datadir=/data -printtoconsole -disablewallet -dnsseed=0 -fixedseeds=0 -listenonion=0 -dbcache=64 -maxconnections=60
+mkdir -p /data/rede2
+exec rubianad -testnet -datadir=/data/rede2 -printtoconsole -disablewallet -dnsseed=0 -fixedseeds=0 -listenonion=0 -dbcache=64 -maxconnections=60
