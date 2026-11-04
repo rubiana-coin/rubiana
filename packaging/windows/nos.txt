@@ -1,0 +1,5 @@
+# Nos de entrada extras da rede de teste (opcional).
+# Um endereco por linha, no formato  enderecoOuNome:porta
+# Linhas que comecam com # sao ignoradas.
+# Exemplo (remova o # para usar):
+# meu-no.exemplo.com:18686

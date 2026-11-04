@@ -1,19 +1,34 @@
-# Security Policy
+# Segurança / Security
 
-## Supported Versions
+A Rubiana é software EXPERIMENTAL. A rede principal ainda não foi lançada e as moedas da rede de teste não têm valor.
+Rubiana is EXPERIMENTAL software. The main network has not launched yet and test-network coins have no value.
 
-See our website for versions of Bitcoin Core that are currently supported with
-security updates: https://bitcoincore.org/en/lifecycle/#schedule
+## Como relatar uma vulnerabilidade / How to report
 
-## Reporting a Vulnerability
+Use o relato privado do GitHub: aba **Security** do repositório, botão **Report a vulnerability**.
+Não abra uma issue pública para falhas de segurança, e não divulgue falhas de consenso (que dividem a rede ou criam moedas) antes de existir uma correção.
 
-To report security issues send an email to security@bitcoincore.org (not for support).
+Please use GitHub's private vulnerability reporting (Security tab, **Report a vulnerability**).
+Do not open public issues for security bugs, and do not disclose consensus bugs before a fix exists.
 
-The following keys may be used to communicate sensitive information to developers:
+## O que nos interessa / Scope
 
-| Name | Fingerprint |
-|------|-------------|
-| Michael Ford | E777 299F C265 DD04 7930  70EB 944D 35F9 AC3D B76A |
-| Ava Chow | 1528 1230 0785 C964 44D3  334D 1756 5732 E08E 5E41 |
+- Falhas de consenso: divisão da cadeia, criação indevida de moedas, validação diferente entre sistemas (Linux, Windows, ARM).
+- Integração do RandomX (`src/pow.cpp`): hash incorreto, uso excessivo de memória, chave da época.
+- Carteira: perda ou vazamento de chaves.
+- Rede: travar ou derrubar nós remotamente.
 
-You can import a key by running the following command with that individual’s fingerprint: `gpg --keyserver hkps://keys.openpgp.org --recv-keys "<fingerprint>"` Ensure that you put quotes around fingerprints containing spaces.
+## O que esperar / What to expect
+
+O projeto é mantido por voluntários. Respondemos em base de melhor esforço, não há programa de recompensas por enquanto, e damos crédito a quem quiser.
+The project is volunteer-run. Replies are best-effort, there is no bug bounty for now, and we credit reporters who wish it.
+
+## Poder do criador / Creator's power
+
+Não existem chaves especiais, pontos de verificação ou interruptores no código. Mudanças dependem de quem roda os nós.
+There are no special keys, checkpoints or kill switches in the code. Changes depend on the people running nodes.
+
+## Código herdado / Inherited code
+
+Falhas que também afetem o Bitcoin Core devem ser reportadas ao projeto Bitcoin Core pelos canais oficiais dele.
+Issues that also affect Bitcoin Core should be reported to the Bitcoin Core project through its official channels.

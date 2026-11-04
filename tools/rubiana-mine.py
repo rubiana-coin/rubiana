@@ -41,7 +41,18 @@ if args.config and os.path.exists(args.config):
                 print("configuracao.txt: valor invalido em 'processadores' (use automatico ou um numero). Usando automatico.")
 
 flag = ["-" + args.rede]
-ADDNODES = ["-addnode=" + n for n in NOS_DE_ENTRADA] if args.rede == "testnet" else []
+def _nos_extras():
+    arq = os.path.join(RAIZ, "nos.txt")
+    extras = []
+    if os.path.exists(arq):
+        for linha in open(arq, encoding="utf-8", errors="replace"):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and ":" in linha:
+                extras.append(linha)
+    return extras
+
+
+ADDNODES = ["-addnode=" + n for n in NOS_DE_ENTRADA + _nos_extras()] if args.rede == "testnet" else []
 EXT = ".exe" if os.name == "nt" else ""
 daemon = os.path.join(args.bin, "rubianad" + EXT)
 cli_path = os.path.join(args.bin, "rubiana-cli" + EXT)
@@ -111,7 +122,7 @@ if not addr:
 modo = "completo" if args.full else "leve"
 nconn = 0
 if ADDNODES:
-    print("conectando ao no de entrada da rede de teste...", flush=True)
+    print("conectando ao no de entrada da rede de teste (" + ", ".join(NOS_DE_ENTRADA + _nos_extras()) + ")...", flush=True)
     for _ in range(30):
         code, out = cli("getconnectioncount")
         if code == 0 and out.isdigit() and int(out) > 0:
