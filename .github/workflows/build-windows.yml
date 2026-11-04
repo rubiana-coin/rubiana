@@ -2,6 +2,14 @@ name: Compilar Windows
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Etiqueta da Release (vazio = so gerar o artefato)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
 
 jobs:
   windows:
@@ -71,3 +79,13 @@ jobs:
         with:
           name: rubiana-windows-pacote
           path: rubiana-windows-pacote.zip
+      - name: Publicar na Release (opcional)
+        if: ${{ inputs.tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -e
+          cp rubiana-windows-pacote.zip "rubiana-windows-${TAG}.zip"
+          sha256sum "rubiana-windows-${TAG}.zip" > SHA256SUMS.txt
+          gh release create "$TAG" "rubiana-windows-${TAG}.zip" SHA256SUMS.txt --prerelease --target "$GITHUB_SHA" --title "Rubiana ${TAG} (rede de teste)" --notes "Pacote de Windows da rede de teste. As moedas nao tem valor. Confira o SHA-256 em SHA256SUMS.txt. Veja o LEIA-ME dentro do pacote."
