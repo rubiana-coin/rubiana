@@ -142,15 +142,29 @@ def main():
             eng.send(f"JOB {job_id} {header76.hex()} {t['target']}")
             deadline = time.time() + (180 if job_id == 1 else 30)
             nonce = None
+            novo_bloco = False
+            ultimo_teste = time.time()
             while nonce is None and time.time() < deadline:
                 try:
                     m = eng.q.get(timeout=1)
                 except queue.Empty:
-                    continue
+                    m = None
                 if m and m[0] == "FOUND" and int(m[1]) == job_id:
                     nonce = int(m[2])
+                    break
+                if time.time() - ultimo_teste >= 2:
+                    ultimo_teste = time.time()
+                    try:
+                        if rpc("getbestblockhash") != t["previousblockhash"]:
+                            novo_bloco = True
+                            break
+                    except (Exception, SystemExit):
+                        pass
             if nonce is None:
-                print("ainda procurando o proximo bloco (isso e normal)...")
+                if novo_bloco:
+                    print("chegou um bloco novo da rede; trocando de trabalho...")
+                else:
+                    print("ainda procurando o proximo bloco (isso e normal)...")
                 continue
             block = header76 + struct.pack("<I", nonce) + varint(1 + len(txs)) + witness
             block += b"".join(bytes.fromhex(x["data"]) for x in txs)
