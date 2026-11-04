@@ -71,9 +71,9 @@ code, out = cli("getblockcount")
 if code != 0 and "-28" not in out:
     print("iniciando o no...", flush=True)
     if os.name == "nt":
-        subprocess.Popen([daemon] + flag + ["-dnsseed=0", "-fixedseeds=0", "-listenonion=0"] + ADDNODES, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000)
+        subprocess.Popen([daemon] + flag + ["-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64"] + ADDNODES, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000)
     else:
-        subprocess.run([daemon] + flag + ["-daemon", "-dnsseed=0", "-fixedseeds=0", "-listenonion=0"] + ADDNODES, check=True)
+        subprocess.run([daemon] + flag + ["-daemon", "-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64"] + ADDNODES, check=True)
     started = True
 
 t0 = time.time()

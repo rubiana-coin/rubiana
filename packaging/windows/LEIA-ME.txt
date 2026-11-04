@@ -5,6 +5,8 @@ valor. Serve para experimentar e ajudar a testar o projeto. Não há
 promessa de ganho nenhum.
 
 COMO USAR
+(Use SOMENTE os arquivos .bat desta pasta. A pasta "build" guarda as pecas
+internas do programa: nao abra os arquivos .exe de la com dois cliques.)
 1. Extraia a pasta (botão direito no .zip, "Extrair tudo"). Não rode de
    dentro do .zip.
 2. Dê dois cliques em  minerar.bat
