@@ -9,13 +9,15 @@ Um nó de entrada é um nó comum que fica ligado 24 horas e aceita conexões de
 - Aviso: o endereço IP do nó fica público.
 
 ## Com Docker (o jeito mais simples)
-docker run -d --name rubiana-no --restart unless-stopped -p 18686:18686 -v rubiana-dados:/data ghcr.io/worm186/rubiana-no:rede2
-docker logs -f rubiana-no
+
+    docker run -d --name rubiana-no --restart unless-stopped -p 18686:18686 -v rubiana-dados:/data ghcr.io/worm186/rubiana-no:rede2
+    docker logs -f rubiana-no
 
 Nos logs procure `Done loading` e `Bound to 0.0.0.0:18686`.
 
 ## Sem Docker
-rubianad -testnet -disablewallet -listen=1 -dnsseed=0 -fixedseeds=0 -listenonion=0 -dbcache=64
+
+    rubianad -testnet -disablewallet -listen=1 -dnsseed=0 -fixedseeds=0 -listenonion=0 -dbcache=64
 
 Não exponha a porta RPC (18690) e não use carteira num nó de entrada.
 

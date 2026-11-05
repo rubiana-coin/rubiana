@@ -29,11 +29,12 @@ Moeda digital experimental, de código aberto, derivada do Bitcoin Core, com min
 **Windows:** um pacote de clique duplo (`minerar.bat`), que será publicado na página de Releases.
 
 **Linux (compilando):**
-sudo apt-get install build-essential cmake pkgconf python3 libevent-dev libboost-dev libsqlite3-dev
-cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPC=OFF
-cmake --build build -j $(nproc) --target bitcoind bitcoin-cli
-g++ -O2 -std=c++17 -o build/bin/rubiana-miner tools/rubiana-miner.cpp -I src/randomx/src $(find build -name librandomx.a | head -1) -lpthread
-python3 tools/rubiana-mine.py
+
+    sudo apt-get install build-essential cmake pkgconf python3 libevent-dev libboost-dev libsqlite3-dev
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPC=OFF
+    cmake --build build -j $(nproc) --target bitcoind bitcoin-cli
+    g++ -O2 -std=c++17 -o build/bin/rubiana-miner tools/rubiana-miner.cpp -I src/randomx/src $(find build -name librandomx.a | head -1) -lpthread
+    python3 tools/rubiana-mine.py
 
 ## Plano
 
