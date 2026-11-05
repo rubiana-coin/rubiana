@@ -7,6 +7,7 @@ import json
 import os
 import re
 import sys
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
@@ -19,6 +20,7 @@ ap.add_argument("--port", type=int, default=8080)
 args = ap.parse_args()
 CLI = args.cli.split()
 CACHE = {}
+SCAN = threading.Lock()
 HALVING = 500000
 START_REWARD = 86 * 10**8
 SAFE = re.compile(r"[0-9a-zA-Z]{1,100}")
@@ -76,7 +78,7 @@ def api_summary():
         hps = 0.0
     tip = info["blocks"]
     return {"chain": info["chain"], "blocks": tip, "bits": info["bits"], "hashps": hps, "mempool": mp["size"],
-            "reward": reward_at(tip + 1) / 1e8, "supply": supply_at(tip) / 1e8}
+            "reward": reward_at(tip + 1) / 1e8, "supply": supply_at(tip) / 1e8, "max": 2 * HALVING * 86}
 
 
 def api_blocks(n):
@@ -94,8 +96,11 @@ def api_block(q):
     return block_summary(h)
 
 
-def api_tx(txid):
-    t = js("getrawtransaction", safe(txid), "true")
+def api_tx(txid, bh=None):
+    cmd = ["getrawtransaction", safe(txid), "true"]
+    if bh:
+        cmd.append(safe(bh))
+    t = js(*cmd)
     return {
         "txid": t["txid"], "blockhash": t.get("blockhash"), "confirmations": t.get("confirmations", 0),
         "vin": [{"coinbase": v["coinbase"]} if "coinbase" in v else {"txid": v["txid"], "vout": v["vout"]} for v in t["vin"]],
@@ -107,7 +112,12 @@ def api_addr(a):
     safe(a)
     if not js("validateaddress", a).get("isvalid"):
         raise ValueError("endereco invalido")
-    r = js("scantxoutset", "start", json.dumps([f"addr({a})"]))
+    if not SCAN.acquire(blocking=False):
+        raise ValueError("outra busca de endereco esta em andamento, tente de novo em instantes")
+    try:
+        r = js("scantxoutset", "start", json.dumps([f"addr({a})"]))
+    finally:
+        SCAN.release()
     return {"endereco": a, "saldo": r["total_amount"], "utxos": len(r["unspents"])}
 
 
@@ -152,7 +162,7 @@ async function home(){
   if(modo!=='home')return;
   if(s.erro||b.erro){$('#conteudo').innerHTML='<pre>'+esc(s.erro||b.erro)+'</pre>';return}
   const tempo=b.length>1?(b[0].time-b[b.length-1].time)/(b.length-1):0;
-  const cards=[['Rede',s.chain],['Altura',s.blocks],['Bits (dificuldade)',s.bits],['Taxa de hash (estimada)',s.hashps.toFixed(0)+' H/s'],['Tempo médio de bloco',tempo.toFixed(0)+' s'],['Recompensa',s.reward+' RUBIA'],['Emitido',Math.round(s.supply).toLocaleString('pt-BR')+' de 86.000.000'],['Mempool',s.mempool+' tx'],['Época da chave RandomX',b.length?b[0].epoch:'-']];
+  const cards=[['Rede',s.chain],['Altura',s.blocks],['Bits (dificuldade)',s.bits],['Taxa de hash (estimada)',s.hashps.toFixed(0)+' H/s'],['Tempo médio de bloco',tempo.toFixed(0)+' s'],['Recompensa',s.reward+' RUBIA'],['Emitido',Math.round(s.supply).toLocaleString('pt-BR')+' de '+s.max.toLocaleString('pt-BR')],['Mempool',s.mempool+' tx'],['Época da chave RandomX',b.length?b[0].epoch:'-']];
   $('#cards').innerHTML=cards.map(c=>'<div class="card"><b>'+c[0]+'</b><span>'+esc(c[1])+'</span></div>').join('');
   $('#conteudo').innerHTML='<table><tr><th>Altura</th><th>Há</th><th>Tx</th><th>Minerador</th><th>Hash</th></tr>'+b.map(x=>'<tr class="c" onclick="bloco(\''+x.hash+'\')"><td>'+x.height+'</td><td>'+ago(x.time)+'</td><td>'+x.ntx+'</td><td class="mono">'+sh(x.miner)+'</td><td class="mono">'+sh(x.hash)+'</td></tr>').join('')+'</table>';
 }
@@ -161,11 +171,11 @@ async function bloco(q){
   const x=await j('/api/block?q='+encodeURIComponent(q));
   if(x.erro){$('#conteudo').innerHTML='<pre>'+esc(x.erro)+'</pre>';return}
   $('#cards').innerHTML='';
-  $('#conteudo').innerHTML='<pre>'+voltar+'Bloco '+x.height+'\nhash: '+x.hash+'\ndata: '+new Date(x.time*1000).toLocaleString('pt-BR')+'\ntransações: '+x.ntx+'   tamanho: '+x.size+' bytes\nbits: '+x.bits+'   nonce: '+x.nonce+'   época da chave: '+x.epoch+'\nminerador: '+esc(x.miner)+'\nrecompensa (coinbase): '+x.reward+'</pre><table><tr><th>Transação</th><th>Entradas</th><th>Saídas</th><th>Total</th></tr>'+x.txs.map(t=>'<tr class="c" onclick="tx(\''+t.txid+'\')"><td class="mono">'+sh(t.txid)+'</td><td>'+t.vin+'</td><td>'+t.vout+'</td><td>'+t.out+'</td></tr>').join('')+'</table>';
+  $('#conteudo').innerHTML='<pre>'+voltar+'Bloco '+x.height+'\nhash: '+x.hash+'\ndata: '+new Date(x.time*1000).toLocaleString('pt-BR')+'\ntransações: '+x.ntx+'   tamanho: '+x.size+' bytes\nbits: '+x.bits+'   nonce: '+x.nonce+'   época da chave: '+x.epoch+'\nminerador: '+esc(x.miner)+'\nrecompensa (coinbase): '+x.reward+'</pre><table><tr><th>Transação</th><th>Entradas</th><th>Saídas</th><th>Total</th></tr>'+x.txs.map(t=>'<tr class="c" onclick="tx(\''+t.txid+'\',\''+x.hash+'\')"><td class="mono">'+sh(t.txid)+'</td><td>'+t.vin+'</td><td>'+t.vout+'</td><td>'+t.out+'</td></tr>').join('')+'</table>';
 }
-async function tx(id){
+async function tx(id,bh){
   modo='tx';
-  const t=await j('/api/tx?id='+encodeURIComponent(id));
+  const t=await j('/api/tx?id='+encodeURIComponent(id)+(bh?'&bh='+encodeURIComponent(bh):''));
   $('#cards').innerHTML='';
   $('#conteudo').innerHTML='<pre>'+voltar+esc(JSON.stringify(t,null,1))+'</pre>';
 }
@@ -215,7 +225,7 @@ class Handler(BaseHTTPRequestHandler):
             elif u.path == "/api/block":
                 self.reply(json.dumps(api_block(q["q"])))
             elif u.path == "/api/tx":
-                self.reply(json.dumps(api_tx(q["id"])))
+                self.reply(json.dumps(api_tx(q["id"], q.get("bh"))))
             elif u.path == "/api/address":
                 self.reply(json.dumps(api_addr(q["a"])))
             else:
