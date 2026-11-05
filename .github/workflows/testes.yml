@@ -1,0 +1,33 @@
+name: Testes unitarios
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkgconf python3 libevent-dev libboost-dev libsqlite3-dev
+      - name: Configurar
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPC=OFF
+      - name: Compilar os testes
+        run: |
+          set -o pipefail
+          cmake --build build -j $(nproc) --target test_bitcoin 2>&1 | tee compilar.log
+      - name: Rodar os testes unitarios
+        continue-on-error: true
+        run: |
+          ./build/bin/test_bitcoin --report_level=short --log_level=error 2>&1 | tee testes.log
+      - name: Guardar os logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-testes
+          path: |
+            compilar.log
+            testes.log
