@@ -234,5 +234,6 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(json.dumps({"erro": str(e)}), code=500)
 
 
-print(f"explorador em http://127.0.0.1:{args.port}", flush=True)
-ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
+if __name__ == "__main__":
+    print(f"explorador em http://127.0.0.1:{args.port}", flush=True)
+    ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
