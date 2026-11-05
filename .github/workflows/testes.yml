@@ -6,7 +6,7 @@ on:
 jobs:
   testes:
     runs-on: ubuntu-24.04
-    timeout-minutes: 150
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - name: Instalar dependencias
@@ -19,10 +19,19 @@ jobs:
         run: |
           set -o pipefail
           cmake --build build -j $(nproc) --target test_bitcoin 2>&1 | tee compilar.log
-      - name: Rodar os testes unitarios
+      - name: Rodar uma suite por vez
         continue-on-error: true
         run: |
-          ./build/bin/test_bitcoin --report_level=short --log_level=error 2>&1 | tee testes.log
+          ./build/bin/test_bitcoin --list_content 2>&1 | grep -E '^[A-Za-z0-9_]+\*$' | tr -d '*' > suites.txt
+          wc -l suites.txt
+          for s in $(cat suites.txt); do
+            if timeout 300 ./build/bin/test_bitcoin -t "$s" --log_level=error > "log-$s.txt" 2>&1; then
+              echo "PASSOU $s"
+            else
+              echo "FALHOU $s (codigo $?)"
+            fi
+          done | tee resumo.txt
+          echo "PASSOU: $(grep -c '^PASSOU' resumo.txt)  FALHOU: $(grep -c '^FALHOU' resumo.txt)" | tee -a resumo.txt
       - name: Guardar os logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -30,4 +39,6 @@ jobs:
           name: logs-testes
           path: |
             compilar.log
-            testes.log
+            suites.txt
+            resumo.txt
+            log-*.txt
