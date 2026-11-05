@@ -66,7 +66,7 @@ jobs:
           set -e
           mkdir -p pacote/rubiana/build/bin pacote/rubiana/tools pacote/rubiana/python
           cp build/bin/rubianad.exe build/bin/rubiana-cli.exe build/bin/rubiana-miner.exe pacote/rubiana/build/bin/
-          cp tools/rubiana-mine.py tools/rubiana-solo-miner.py pacote/rubiana/tools/
+          cp tools/rubiana-mine.py tools/rubiana-solo-miner.py tools/rubiana-app.py tools/rubiana-explorer.py tools/rubiana_common.py tools/rubiana_carteira.py pacote/rubiana/tools/
           cp packaging/windows/* pacote/rubiana/
           sed -i 's/$/\r/' pacote/rubiana/*.bat pacote/rubiana/configuracao.txt pacote/rubiana/LEIA-ME.txt
           cp COPYING pacote/rubiana/COPYING.txt

@@ -18,6 +18,17 @@ internas do programa: nao abra os arquivos .exe de la com dois cliques.)
    bloco que você minerou. A mensagem "ainda procurando o próximo bloco"
    é normal: a dificuldade sobe conforme se minera.
 
+JANELA COMPLETA (minerar, carteira e blocos)
+De dois cliques em  janela.bat . Ele abre uma pagina no seu navegador,
+so neste computador, com tres abas: Minerar (iniciar, parar e ver a
+velocidade), Carteira (saldo, receber, enviar, historico e backup) e
+Blocos (ver a rede). Para encerrar, use o botao "Sair" da pagina. Se
+fechar a janela preta pelo X, de dois cliques em parar.bat.
+A carteira desta versao de teste fica em um arquivo neste computador SEM
+senha. Use o botao de backup da aba Carteira (a copia vai para a pasta
+.rubiana\backups do seu usuario) e guarde essa copia em outro lugar.
+As moedas de teste nao tem valor, mas e bom praticar isso desde ja.
+
 PARA PARAR
 Aperte Ctrl+C na janela. Se aparecer "Deseja finalizar o arquivo em
 lotes (S/N)?", digite N e Enter. Se fechar a janela pelo X, dê dois
