@@ -118,6 +118,20 @@ def carregar_explorador():
 
 
 EXPLORADOR = carregar_explorador()
+import rubiana_carteira as CARTEIRA  # noqa: E402
+
+
+def preparar_carteira():
+    t0 = time.time()
+    while time.time() - t0 < 300:
+        code, _ = cli("getblockcount")
+        if code == 0:
+            CARTEIRA.garantir(cli)
+            return
+        time.sleep(2)
+
+
+threading.Thread(target=preparar_carteira, daemon=True).start()
 
 
 def api_explorador(caminho, q):
@@ -261,7 +275,8 @@ iframe{width:100%;height:80vh;border:0}
 <header><h1>Rubiana <small>REDE DE TESTE: as moedas não têm valor</small></h1>
 <button class="sec" onclick="sair()">Sair</button></header>
 <nav><button id="b-min" class="on" onclick="aba('min')">Minerar</button>
-<button id="b-blo" onclick="aba('blo')">Blocos</button></nav>
+<button id="b-blo" onclick="aba('blo')">Blocos</button>
+<button id="b-car" onclick="aba('car')">Carteira</button></nav>
 <div id="a-min">
 <div class="cards" id="cards"></div>
 <div class="box"><b>Endereço de mineração:</b> <span class="mono" id="end"></span></div>
@@ -276,6 +291,7 @@ iframe{width:100%;height:80vh;border:0}
 <div class="box"><pre id="log"></pre></div>
 </div>
 <div id="a-blo" style="display:none"><iframe id="fr"></iframe></div>
+<div id="a-car" style="display:none"><iframe id="fc"></iframe></div>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -286,9 +302,12 @@ async function api(u,corpo){
 function aba(n){
   $('#a-min').style.display=n==='min'?'':'none';
   $('#a-blo').style.display=n==='blo'?'':'none';
+  $('#a-car').style.display=n==='car'?'':'none';
   $('#b-min').className=n==='min'?'on':'';
   $('#b-blo').className=n==='blo'?'on':'';
+  $('#b-car').className=n==='car'?'on':'';
   if(n==='blo'&&!$('#fr').getAttribute('src'))$('#fr').setAttribute('src','/blocos');
+  if(n==='car'&&!$('#fc').getAttribute('src'))$('#fc').setAttribute('src','/carteira');
 }
 let pronto=false,ocupado=false;
 const val=x=>(x===null||x===undefined)?'-':x;
@@ -362,7 +381,7 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if not self._host_ok():
-            return self._json({"erro": "host nao permitido"}, 403)
+            return self._json({"erro": "host nao permitido: " + str(self.headers.get("Host"))}, 403)
         u = urlparse(self.path)
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         if u.path == "/" and "t" in q and secrets.compare_digest(q["t"].encode(), TOKEN.encode()):
@@ -381,6 +400,12 @@ class H(BaseHTTPRequestHandler):
                 self._resp(EXPLORADOR.PAGE, "text/html")
             elif u.path == "/api/status":
                 self._json(status())
+            elif u.path == "/carteira":
+                self._resp(CARTEIRA.PAGE, "text/html")
+            elif u.path == "/api/carteira/resumo":
+                self._json(CARTEIRA.resumo(cli))
+            elif u.path == "/api/carteira/historico":
+                self._json(CARTEIRA.historico(cli))
             elif u.path.startswith("/api/"):
                 r = api_explorador(u.path, q)
                 if r is None:
@@ -408,6 +433,12 @@ class H(BaseHTTPRequestHandler):
             elif self.path == "/api/parar":
                 parar_mineracao()
                 self._json({"ok": True})
+            elif self.path == "/api/carteira/receber":
+                self._json(CARTEIRA.receber(cli))
+            elif self.path == "/api/carteira/enviar":
+                self._json(CARTEIRA.enviar(cli, corpo))
+            elif self.path == "/api/carteira/backup":
+                self._json(CARTEIRA.backup(cli))
             elif self.path == "/api/sair":
                 self._json({"ok": True})
                 threading.Thread(target=servidor.shutdown, daemon=True).start()
