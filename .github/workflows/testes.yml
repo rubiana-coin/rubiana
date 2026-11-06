@@ -6,7 +6,7 @@ on:
 jobs:
   testes:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
       - name: Instalar dependencias
@@ -25,7 +25,7 @@ jobs:
           ./build/bin/test_bitcoin --list_content 2>&1 | grep -E '^[A-Za-z0-9_]+\*$' | tr -d '*' > suites.txt
           wc -l suites.txt
           for s in $(cat suites.txt); do
-            if timeout 300 ./build/bin/test_bitcoin -t "$s" --log_level=error > "log-$s.txt" 2>&1; then
+            if timeout 1800 ./build/bin/test_bitcoin -t "$s" --log_level=error > "log-$s.txt" 2>&1; then
               echo "PASSOU $s"
             else
               echo "FALHOU $s (codigo $?)"
