@@ -92,6 +92,7 @@ input{padding:7px;border-radius:6px;border:0;margin:4px 8px 8px 0}
 .card span{font-size:17px}
 .box{background:#1a1f3a;border-radius:10px;padding:12px;margin:10px 14px}
 .aviso{color:#ffcc80;font-size:13px}
+label{display:inline-block;margin-right:14px}
 .mono{font-family:monospace;word-break:break-all}
 table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:6px;border-bottom:1px solid #2a2f50;text-align:left}

@@ -320,7 +320,7 @@ async function atualizar(){
     $('#end').textContent=s.endereco||'(aparece depois de iniciar a mineração)';
     $('#ini').disabled=s.minerando;$('#par').disabled=!s.minerando;
     $('#est').textContent=s.minerando?' Minerando...':' Parado.';
-    $('#aviso').textContent=(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
+    $('#aviso').textContent=(s.no&&s.minerando&&s.conexoes===0)?'ATENÇÃO: você não está conectado à rede de teste (Conexões 0). Os blocos que você minerar agora podem ser descartados. Veja no LEIA-ME a seção sobre conexões.':(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
     if(!pronto){$('#nuc').value=s.threads_padrao;$('#nuc').max=s.nucleos;pronto=true}
     const pre=$('#log');const fim=pre.scrollTop+pre.clientHeight>=pre.scrollHeight-20;
     pre.textContent=s.log.join('\n');if(fim)pre.scrollTop=pre.scrollHeight;

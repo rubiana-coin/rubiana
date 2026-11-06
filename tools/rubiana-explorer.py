@@ -161,7 +161,7 @@ async function home(){
   const [s,b]=await Promise.all([j('/api/summary'),j('/api/blocks?n=20')]);
   if(modo!=='home')return;
   if(s.erro||b.erro){$('#conteudo').innerHTML='<pre>'+esc(s.erro||b.erro)+'</pre>';return}
-  const tempo=b.length>1?(b[0].time-b[b.length-1].time)/(b.length-1):0;
+  const bb=b.filter(x=>x.height>0);const tempo=bb.length>1?(bb[0].time-bb[bb.length-1].time)/(bb.length-1):0;
   const cards=[['Rede',s.chain],['Altura',s.blocks],['Bits (dificuldade)',s.bits],['Taxa de hash (estimada)',s.hashps.toFixed(0)+' H/s'],['Tempo médio de bloco',tempo.toFixed(0)+' s'],['Recompensa',s.reward+' RUBIA'],['Emitido',Math.round(s.supply).toLocaleString('pt-BR')+' de '+s.max.toLocaleString('pt-BR')],['Mempool',s.mempool+' tx'],['Época da chave RandomX',b.length?b[0].epoch:'-']];
   $('#cards').innerHTML=cards.map(c=>'<div class="card"><b>'+c[0]+'</b><span>'+esc(c[1])+'</span></div>').join('');
   $('#conteudo').innerHTML='<table><tr><th>Altura</th><th>Há</th><th>Tx</th><th>Minerador</th><th>Hash</th></tr>'+b.map(x=>'<tr class="c" onclick="bloco(\''+x.hash+'\')"><td>'+x.height+'</td><td>'+ago(x.time)+'</td><td>'+x.ntx+'</td><td class="mono">'+sh(x.miner)+'</td><td class="mono">'+sh(x.hash)+'</td></tr>').join('')+'</table>';

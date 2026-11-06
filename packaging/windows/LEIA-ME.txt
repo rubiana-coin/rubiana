@@ -46,6 +46,17 @@ O minerador se conecta ao nó de teste público da Rubiana para minerar
 junto com outras pessoas. Qualquer nó de uma rede pública vê o endereço
 IP de quem se conecta a ele.
 
+SE APARECER "Conexoes: 0" OU "nao consegui conectar a rede de teste"
+O seu computador esta minerando sozinho: os blocos que ele acha nao contam
+para a rede e serao descartados quando ele conseguir conectar. Causas
+comuns: rede de empresa ou escola que bloqueia conexoes de saida,
+firewall, antivirus ou roteador. Tente em outra rede (por exemplo, a de
+casa). Para testar, abra o PowerShell (menu Iniciar, digite PowerShell) e
+rode:
+  Test-NetConnection acela.proxy.rlwy.net -Port 11805
+Se a linha TcpTestSucceeded mostrar False, o bloqueio esta na sua rede ou
+no seu computador, e nao no programa.
+
 AVISOS
 - Programas de mineração costumam ser marcados como suspeitos por
   antivírus. Se o seu bloquear, não desative o antivírus: se você não
