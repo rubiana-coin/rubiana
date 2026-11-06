@@ -45,13 +45,26 @@ TRAVA = threading.Lock()
 LOG = collections.deque(maxlen=300)
 MIN = {"proc": None, "achados": 0, "taxa": ""}
 ESTADO = {"no_nosso": False}
+CARTEIRA_NOME = "rubiana"
+CART = {"pronta": False}
+_END = {}
 _NO = {"t": 0.0, "v": {}}
 
 
 def cli(*a, wallet=False):
-    cmd = CLI + (["-rpcwallet=minerador"] if wallet else []) + [str(x) for x in a]
+    cmd = CLI + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in a]
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    except subprocess.TimeoutExpired:
+        return 1, "tempo esgotado"
+    return r.returncode, (r.stdout.strip() or r.stderr.strip())
+
+
+def cli_stdin(args_list, linhas, wallet=False, timeout=900):
+    # Para segredos: os valores vao pela entrada padrao, nunca pela linha de comando.
+    cmd = CLI + ["-stdin", "-rpcclienttimeout=0"] + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in args_list]
+    try:
+        r = subprocess.run(cmd, input="\n".join(linhas) + "\n", capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         return 1, "tempo esgotado"
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
@@ -126,7 +139,7 @@ def preparar_carteira():
     while time.time() - t0 < 300:
         code, _ = cli("getblockcount")
         if code == 0:
-            CARTEIRA.garantir(cli)
+            CART["pronta"] = CARTEIRA.garantir(cli)
             return
         time.sleep(2)
 
@@ -172,7 +185,9 @@ def iniciar(corpo):
         p = MIN["proc"]
         if p and p.poll() is None:
             return {"erro": "ja esta minerando"}
-        cmd = [sys.executable, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads)]
+        if not CART["pronta"]:
+            return {"erro": "Crie ou restaure a sua carteira antes de minerar (aba Carteira)."}
+        cmd = [sys.executable, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads), "--carteira", CARTEIRA_NOME]
         if corpo.get("full"):
             cmd.append("--full")
         env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
@@ -206,9 +221,21 @@ def parar_mineracao():
 def endereco():
     arq = os.path.join(os.path.expanduser("~"), ".rubiana", "endereco-" + args.rede + ".txt")
     try:
-        return open(arq).read().strip() or None
+        a = open(arq).read().strip()
     except OSError:
         return None
+    if not a or not CART["pronta"]:
+        return None
+    if _END.get("a") == a:
+        return a
+    code, out = cli("getaddressinfo", a, wallet=True)
+    try:
+        if code == 0 and json.loads(out).get("ismine"):
+            _END["a"] = a
+            return a
+    except ValueError:
+        pass
+    return None
 
 
 def info_no():
@@ -220,6 +247,8 @@ def info_no():
     if code == 0 and out.isdigit():
         v["no"] = True
         v["altura"] = int(out)
+        if not CART["pronta"]:
+            CART["pronta"] = CARTEIRA.estado(cli).get("estado") == "pronta"
         c, o = cli("getconnectioncount")
         if c == 0 and o.isdigit():
             v["conexoes"] = int(o)
@@ -241,7 +270,7 @@ def status():
     p = MIN["proc"]
     v.update({"rede": args.rede, "minerando": bool(p and p.poll() is None), "achados": MIN["achados"],
               "taxa": MIN["taxa"], "log": list(LOG)[-80:], "threads_padrao": threads_padrao(),
-              "nucleos": os.cpu_count() or 1, "endereco": endereco()})
+              "nucleos": os.cpu_count() or 1, "endereco": endereco(), "carteira": CART["pronta"]})
     return v
 
 
@@ -309,7 +338,7 @@ function aba(n){
   if(n==='blo'&&!$('#fr').getAttribute('src'))$('#fr').setAttribute('src','/blocos');
   if(n==='car'&&!$('#fc').getAttribute('src'))$('#fc').setAttribute('src','/carteira');
 }
-let pronto=false,ocupado=false;
+let pronto=false,ocupado=false,jaIr=false;
 const val=x=>(x===null||x===undefined)?'-':x;
 async function atualizar(){
   if(ocupado)return;ocupado=true;
@@ -318,9 +347,10 @@ async function atualizar(){
     const c=[['Rede',s.rede],['Nó',s.no?'ligado':'iniciando...'],['Altura',val(s.altura)],['Conexões',val(s.conexoes)],['Saldo (já maduro)',val(s.saldo)],['Blocos enviados',s.achados],['Velocidade',s.taxa||'-']];
     $('#cards').innerHTML=c.map(x=>'<div class="card"><b>'+x[0]+'</b><span>'+esc(x[1])+'</span></div>').join('');
     $('#end').textContent=s.endereco||'(aparece depois de iniciar a mineração)';
-    $('#ini').disabled=s.minerando;$('#par').disabled=!s.minerando;
+    if(s.no&&!s.carteira&&!jaIr){jaIr=true;aba('car')}
+    $('#ini').disabled=s.minerando||!s.carteira;$('#par').disabled=!s.minerando;
     $('#est').textContent=s.minerando?' Minerando...':' Parado.';
-    $('#aviso').textContent=(s.no&&s.minerando&&s.conexoes===0)?'ATENÇÃO: você não está conectado à rede de teste (Conexões 0). Os blocos que você minerar agora podem ser descartados. Veja no LEIA-ME a seção sobre conexões.':(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
+    $('#aviso').textContent=(s.no&&!s.carteira)?'Para minerar, primeiro crie ou restaure a sua carteira na aba Carteira.':(s.no&&s.minerando&&s.conexoes===0)?'ATENÇÃO: você não está conectado à rede de teste (Conexões 0). Os blocos que você minerar agora podem ser descartados. Veja no LEIA-ME a seção sobre conexões.':(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
     if(!pronto){$('#nuc').value=s.threads_padrao;$('#nuc').max=s.nucleos;pronto=true}
     const pre=$('#log');const fim=pre.scrollTop+pre.clientHeight>=pre.scrollHeight-20;
     pre.textContent=s.log.join('\n');if(fim)pre.scrollTop=pre.scrollHeight;
@@ -402,6 +432,8 @@ class H(BaseHTTPRequestHandler):
                 self._json(status())
             elif u.path == "/carteira":
                 self._resp(CARTEIRA.PAGE, "text/html")
+            elif u.path == "/api/carteira/estado":
+                self._json(CARTEIRA.estado(cli))
             elif u.path == "/api/carteira/resumo":
                 self._json(CARTEIRA.resumo(cli))
             elif u.path == "/api/carteira/historico":
@@ -433,6 +465,16 @@ class H(BaseHTTPRequestHandler):
             elif self.path == "/api/parar":
                 parar_mineracao()
                 self._json({"ok": True})
+            elif self.path == "/api/carteira/frase/nova":
+                self._json(CARTEIRA.frase_nova(corpo))
+            elif self.path == "/api/carteira/frase/confirmar":
+                r = CARTEIRA.frase_confirmar(cli, cli_stdin, corpo, args.rede)
+                CART["pronta"] = CART["pronta"] or bool(r.get("ok"))
+                self._json(r)
+            elif self.path == "/api/carteira/frase/restaurar":
+                r = CARTEIRA.frase_restaurar(cli, cli_stdin, corpo, args.rede)
+                CART["pronta"] = CART["pronta"] or bool(r.get("ok"))
+                self._json(r)
             elif self.path == "/api/carteira/receber":
                 self._json(CARTEIRA.receber(cli))
             elif self.path == "/api/carteira/enviar":

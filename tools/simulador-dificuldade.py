@@ -13,8 +13,9 @@ CENARIOS = {
     "1 PC forte sozinho": [("forte", 1, 5000)],
     "1 PC forte + 10 medios + 30 celulares": [("forte", 1, 5000), ("medio", 10, 300), ("celular", 30, 30)],
     "10 medios + 50 celulares (sem PC forte)": [("medio", 10, 300), ("celular", 50, 30)],
+    "comeco fraco: 5 PCs em modo leve + 10 celulares": [("leve", 5, 66), ("celular", 10, 30)],
 }
-PARTIDAS = [256, 4096, 16384, 65536, 262144]   # tentativas esperadas por bloco
+PARTIDAS = [16384, 65536, 262144, 1048576]   # tentativas esperadas por bloco
 VARIANTES = ("atual", "janela-cresce")
 
 
