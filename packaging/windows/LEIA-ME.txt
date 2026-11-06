@@ -24,10 +24,18 @@ so neste computador, com tres abas: Minerar (iniciar, parar e ver a
 velocidade), Carteira (saldo, receber, enviar, historico e backup) e
 Blocos (ver a rede). Para encerrar, use o botao "Sair" da pagina. Se
 fechar a janela preta pelo X, de dois cliques em parar.bat.
-A carteira desta versao de teste fica em um arquivo neste computador SEM
-senha. Use o botao de backup da aba Carteira (a copia vai para a pasta
-.rubiana\backups do seu usuario) e guarde essa copia em outro lugar.
+Na primeira vez, a aba Carteira pede para criar a sua carteira. Ela gera
+uma FRASE DE RECUPERACAO de 12 palavras (ou 24, se voce escolher). Anote as
+palavras no papel, na ordem, e guarde em lugar seguro. Quem tiver a frase
+controla as moedas, e sem ela nao ha como recuperar a carteira se o
+computador quebrar ou for formatado. Nao tire foto e nao salve no
+computador. Para recuperar a carteira em outro computador, use "Ja tenho
+uma frase". O arquivo da carteira neste computador nao tem senha.
+A mineracao pela janela so comeca depois que a carteira existe, e as
+moedas mineradas vao para ela. O botao de backup do arquivo e opcional.
 As moedas de teste nao tem valor, mas e bom praticar isso desde ja.
+Observacao: o minerar.bat (modo simples, sem janela) usa uma carteira de
+teste antiga, sem frase de recuperacao.
 
 PARA PARAR
 Aperte Ctrl+C na janela. Se aparecer "Deseja finalizar o arquivo em
