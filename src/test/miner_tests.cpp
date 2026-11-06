@@ -909,7 +909,8 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
             if (txFirst.size() < 4)
                 txFirst.push_back(block.vtx[0]);
             block.hashMerkleRoot = BlockMerkleRoot(block);
-            block.nNonce = bi.nonce;
+            block.nNonce = 0;
+                while (!CheckProofOfWork(GetPoWHash(block), block.nBits, Assert(m_node.chainman)->GetConsensus())) ++block.nNonce;
         }
         // Alternate calls between submitBlock and submitSolution via the
         // Mining interface.

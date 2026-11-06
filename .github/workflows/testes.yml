@@ -2,6 +2,11 @@ name: Testes unitarios
 
 on:
   workflow_dispatch:
+    inputs:
+      suites:
+        description: "Suites a rodar, separadas por espaco (vazio = todas)"
+        required: false
+        default: ""
 
 jobs:
   testes:
@@ -21,8 +26,10 @@ jobs:
           cmake --build build -j $(nproc) --target test_bitcoin 2>&1 | tee compilar.log
       - name: Rodar uma suite por vez
         continue-on-error: true
+        env:
+          SUITES: ${{ inputs.suites }}
         run: |
-          ./build/bin/test_bitcoin --list_content 2>&1 | grep -E '^[A-Za-z0-9_]+\*$' | tr -d '*' > suites.txt
+          if [ -n "$SUITES" ]; then printf '%s\n' $SUITES > suites.txt; else ./build/bin/test_bitcoin --list_content 2>&1 | grep -E '^[A-Za-z0-9_]+\*$' | tr -d '*' > suites.txt; fi
           wc -l suites.txt
           for s in $(cat suites.txt); do
             if timeout 1800 ./build/bin/test_bitcoin -t "$s" --log_level=error > "log-$s.txt" 2>&1; then
