@@ -11,7 +11,7 @@ import sys
 import time
 
 # No de entrada da rede de teste (ponto de encontro dos mineradores)
-NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805"]
+NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805", "iriguchi.proxy.rlwy.net:57877"]
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)

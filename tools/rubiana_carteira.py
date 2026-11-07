@@ -290,7 +290,7 @@ function anotei(){
 function voltar(){mostrarGrade();passo('s2')}
 async function confirmar(){
   const resp={};pedir.forEach(p=>{resp[p]=$('#w'+p).value.trim().toLowerCase()});
-  $('#msg3').textContent=' Criando a carteira...';
+  $('#msg3').textContent=' Criando a carteira... isso pode levar mais de um minuto. Não feche esta janela.';
   const r=await api('/api/carteira/frase/confirmar',{respostas:resp});
   if(r.erro){$('#msg3').textContent=' '+r.erro;return}
   palavras=[];pedir=[];$('#grade').innerHTML='';$('#pedidos').innerHTML='';
