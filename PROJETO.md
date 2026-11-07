@@ -12,7 +12,7 @@ Nome provisório: Rubiana, sigla RUBIA. Checagens feitas (CoinMarketCap, GitHub,
 - App Android: minerador + carteira open source + explorador de blocos (ideia tipo mempool.space).
 - Mensagem do gênesis definitiva: "17/Oct/2026 Mineracao para todos, na palma da mao | BTC ~US$126 mil, 1 ano" (entra no gênesis da rede principal, ainda não feito).
 
-## Estado do código (repositório worm186/Celcoin, branch master)
+## Estado do código (repositório rubiana-coin/rubiana, branch master)
 - Recompensa 86 (validation.cpp), teto de 86 milhões (amount.h), halving 500000 e bloco de 5 min (kernel/chainparams.cpp).
 - Identidade própria: magic bytes e portas (main 8686, testnet 18686, regtest 18688); endereços rubia / trubia / rrubia.
 - RandomX em src/randomx (versão fixa em COMMIT.txt), ligado à bitcoin_common; GetPoWHash() no pow.cpp com chave FIXA de teste; 5 checagens de PoW trocadas (blockstorage.cpp x2, validation.cpp x2, rpc/mining.cpp).
