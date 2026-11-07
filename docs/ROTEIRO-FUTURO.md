@@ -17,7 +17,7 @@ Atualizado em 06/11/2026.
 - Número de moeda do caminho de derivação da carteira (hoje só testnet e regtest).
 - Gênesis definitivo, IS_RELEASE, hora de início e texto do anúncio.
 - Período de revisão aberta (mínimo de 3 semanas) e ensaio final com dois nós.
-- Testes unitários: atualizar ou aposentar os que conferem valores do Bitcoin; investigar miner_tests, transaction_tests e validation_chainstate.
+- Testes unitários: atualizar ou aposentar os que conferem valores do Bitcoin; investigar miner_tests e validation_chainstate (o transaction_tests é esperado: com o teto de 86 milhões, transações que o Bitcoin considera inválidas passam a ser válidas).
 - Segundo nó de entrada (outra região ou outra pessoa).
 - Migração do repositório para a conta do projeto.
 - Depois do PC: Android (medir o RandomX em ARM), explorador público, gráficos na janela e senha da carteira.
