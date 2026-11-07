@@ -87,6 +87,10 @@ if code != 0 and "-28" not in out:
         subprocess.run([daemon] + flag + ["-daemon", "-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64"] + ADDNODES, check=True)
     started = True
 
+if not started and ADDNODES:
+    for _n in NOS_DE_ENTRADA + _nos_extras():
+        cli("addnode", _n, "add")
+
 t0 = time.time()
 while True:
     code, out = cli("getblockcount")

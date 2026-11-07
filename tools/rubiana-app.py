@@ -105,6 +105,9 @@ def garantir_no():
     code, out = cli("getblockcount")
     if code == 0 or "-28" in out:
         print("no ja estava ligado.", flush=True)
+        if args.rede == "testnet":
+            for n in nos_de_entrada():
+                cli("addnode", n, "add")
         return
     print("iniciando o no...", flush=True)
     flags = ["-" + args.rede, "-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64", "-txindex=1"]
