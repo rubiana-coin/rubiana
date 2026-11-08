@@ -429,13 +429,13 @@ class H(BaseHTTPRequestHandler):
             return self._resp("Acesso negado. Abra a janela pelo endereco que aparece no programa (janela.bat).", "text/plain", 403)
         try:
             if u.path == "/":
-                self._resp(PAGE_APP, "text/html")
+                self._resp(pagina(PAGE_APP), "text/html")
             elif u.path == "/blocos":
                 self._resp(EXPLORADOR.PAGE, "text/html")
             elif u.path == "/api/status":
                 self._json(status())
             elif u.path == "/carteira":
-                self._resp(CARTEIRA.PAGE, "text/html")
+                self._resp(pagina(CARTEIRA.PAGE), "text/html")
             elif u.path == "/api/carteira/estado":
                 self._json(CARTEIRA.estado(cli))
             elif u.path == "/api/carteira/resumo":
@@ -504,12 +504,56 @@ def encerrar():
         print("no encerrado.", flush=True)
 
 
+TEXTOS_PRINCIPAL = [
+    ("<small>REDE DE TESTE: as moedas não têm valor</small>", "<small>REDE PRINCIPAL</small>"),
+    ("REDE DE TESTE: as moedas não têm valor, mas pratique como se tivessem.", "REDE PRINCIPAL: sem a frase de recuperação não há como recuperar as suas moedas."),
+    ("REDE DE TESTE: as moedas não têm valor. Esta carteira", "REDE PRINCIPAL. Esta carteira"),
+]
+
+
+def pagina(html):
+    if args.rede == "principal":
+        for a, b in TEXTOS_PRINCIPAL:
+            html = html.replace(a, b)
+    return html
+
+
+def abrir_janela(url):
+    # No Windows abre uma janela de aplicativo (Edge ou Chrome, sem abas nem barra de endereco).
+    if os.name == "nt":
+        bases = [os.environ.get("ProgramFiles(x86)", ""), os.environ.get("ProgramFiles", ""), os.environ.get("LOCALAPPDATA", "")]
+        perfil = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "Rubiana", "janela-perfil")
+        for b in bases:
+            if not b:
+                continue
+            for rel in (("Microsoft", "Edge", "Application", "msedge.exe"), ("Google", "Chrome", "Application", "chrome.exe")):
+                exe = os.path.join(b, *rel)
+                if os.path.exists(exe):
+                    try:
+                        return subprocess.Popen([exe, "--app=" + url, "--user-data-dir=" + perfil, "--no-first-run", "--no-default-browser-check", "--disable-background-mode", "--window-size=1180,860"])
+                    except OSError:
+                        pass
+    webbrowser.open(url)
+    return None
+
+
+def vigiar_janela(proc):
+    t0 = time.time()
+    proc.wait()
+    if time.time() - t0 < 5:
+        return
+    time.sleep(1)
+    servidor.shutdown()
+
+
 garantir_no()
 url = "http://127.0.0.1:%d/?t=%s" % (PORTA, TOKEN)
 print("Janela da Rubiana: " + url, flush=True)
 print("(a senha no endereco vale so enquanto este programa estiver aberto; Ctrl+C encerra)", flush=True)
 if not args.no_browser:
-    webbrowser.open(url)
+    janela = abrir_janela(url)
+    if janela is not None:
+        threading.Thread(target=vigiar_janela, args=(janela,), daemon=True).start()
 try:
     servidor.serve_forever()
 except KeyboardInterrupt:
