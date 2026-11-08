@@ -161,7 +161,7 @@ public:
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.enforce_BIP94 = false;
         consensus.fPowNoRetargeting = false;
-        consensus.nInitialPowBits = 0x1f00ffff; // ~65.000 tentativas por bloco
+        consensus.nInitialPowBits = 0x1e400000; // ~262.144 tentativas por bloco
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
@@ -188,7 +188,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = GenesisFixo(CreateGenesisBlock(1792195260, 0, 0x2000ffff, 1, 86 * COIN, "17/Oct/2026 Mineracao para todos, na palma da mao"), 44, "5b73b232dd121999f5deabddfed47ceee7cabd99cf1d5e4f054bd637a39162e6", "principal");
+        genesis = GenesisFixo(CreateGenesisBlock(1797087600, 0, 0x2000ffff, 1, 86 * COIN, "CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins"), 161, "bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677", "principal");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         // Note that of those which support the service bits prefix, most only support a subset of
