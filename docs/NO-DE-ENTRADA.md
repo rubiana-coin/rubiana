@@ -10,7 +10,7 @@ Um nó de entrada é um nó comum que fica ligado 24 horas e aceita conexões de
 
 ## Com Docker (o jeito mais simples)
 
-    docker run -d --name rubiana-no --restart unless-stopped -p 18686:18686 -v rubiana-dados:/data ghcr.io/worm186/rubiana-no:rede2
+    docker run -d --name rubiana-no --restart unless-stopped -p 18686:18686 -v rubiana-dados:/data ghcr.io/rubiana-coin/rubiana-no:rede2
     docker logs -f rubiana-no
 
 Nos logs procure `Done loading` e `Bound to 0.0.0.0:18686`.
