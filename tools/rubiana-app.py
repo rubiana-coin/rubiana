@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Rubiana - janela unica para PC (v0): minerar e ver blocos no navegador.
-Uso: python3 tools/rubiana-app.py [--rede testnet|regtest] [--config arquivo] [--no-browser]
+Uso: python3 tools/rubiana-app.py [--rede testnet|principal|regtest] [--config arquivo] [--no-browser]
 Abre uma pagina local protegida por uma senha aleatoria (so vale nesta execucao).
 Ctrl+C ou o botao Sair encerram."""
 import argparse
@@ -24,7 +24,7 @@ RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--rede", default="testnet", choices=["testnet", "regtest"])
+ap.add_argument("--rede", default="testnet", choices=["testnet", "principal", "regtest"])
 ap.add_argument("--bin", default=os.path.join(RAIZ, "build", "bin"))
 ap.add_argument("--config", default="", help="configuracao.txt (opcional)")
 ap.add_argument("--port", type=int, default=0, help="0 = escolhe uma porta livre")
@@ -39,7 +39,7 @@ engine = os.path.join(args.bin, "rubiana-miner" + EXT)
 for f in (daemon, cli_path, engine):
     if not os.path.exists(f):
         sys.exit("nao encontrei " + f + " (compile primeiro)")
-CLI = [cli_path, "-" + args.rede]
+CLI = [cli_path] + ([] if args.rede == "principal" else ["-" + args.rede])
 TOKEN = secrets.token_urlsafe(18)
 TRAVA = threading.Lock()
 LOG = collections.deque(maxlen=300)
@@ -74,7 +74,8 @@ def nos_de_entrada():
     nos = []
     try:
         txt = open(os.path.join(AQUI, "rubiana-mine.py"), encoding="utf-8").read()
-        m = re.search(r"NOS_DE_ENTRADA\s*=\s*\[(.*?)\]", txt, re.S)
+        nome_lista = "NOS_PRINCIPAL" if args.rede == "principal" else "NOS_DE_ENTRADA"
+        m = re.search(nome_lista + r"\s*=\s*\[(.*?)\]", txt, re.S)
         if m:
             nos += re.findall(r'"([^"]+)"', m.group(1))
     except OSError:
@@ -105,13 +106,13 @@ def garantir_no():
     code, out = cli("getblockcount")
     if code == 0 or "-28" in out:
         print("no ja estava ligado.", flush=True)
-        if args.rede == "testnet":
+        if args.rede in ("testnet", "principal"):
             for n in nos_de_entrada():
                 cli("addnode", n, "add")
         return
     print("iniciando o no...", flush=True)
-    flags = ["-" + args.rede, "-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64", "-txindex=1"]
-    addn = ["-addnode=" + n for n in nos_de_entrada()] if args.rede == "testnet" else []
+    flags = ([] if args.rede == "principal" else ["-" + args.rede]) + ["-dnsseed=0", "-fixedseeds=0", "-listenonion=0", "-dbcache=64", "-txindex=1"]
+    addn = ["-addnode=" + n for n in nos_de_entrada()] if args.rede in ("testnet", "principal") else []
     if os.name == "nt":
         subprocess.Popen([daemon] + flags + addn, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=0x08000000)
     else:
@@ -353,7 +354,7 @@ async function atualizar(){
     if(s.no&&!s.carteira&&!jaIr){jaIr=true;aba('car')}
     $('#ini').disabled=s.minerando||!s.carteira;$('#par').disabled=!s.minerando;
     $('#est').textContent=s.minerando?' Minerando...':' Parado.';
-    $('#aviso').textContent=(s.no&&!s.carteira)?'Para minerar, primeiro crie ou restaure a sua carteira na aba Carteira.':(s.no&&s.minerando&&s.conexoes===0)?'ATENÇÃO: você não está conectado à rede de teste (Conexões 0). Os blocos que você minerar agora podem ser descartados. Veja no LEIA-ME a seção sobre conexões.':(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
+    $('#aviso').textContent=(s.no&&!s.carteira)?'Para minerar, primeiro crie ou restaure a sua carteira na aba Carteira.':(s.no&&s.minerando&&s.conexoes===0)?'ATENÇÃO: você não está conectado à rede (Conexões 0). Os blocos que você minerar agora podem ser descartados. Veja no LEIA-ME a seção sobre conexões.':(s.no&&s.txindex===false)?'Aviso: este nó foi iniciado sem -txindex=1. Abrir uma transação pelo número pode dar erro; clicar nela dentro de um bloco funciona.':'';
     if(!pronto){$('#nuc').value=s.threads_padrao;$('#nuc').max=s.nucleos;pronto=true}
     const pre=$('#log');const fim=pre.scrollTop+pre.clientHeight>=pre.scrollHeight-20;
     pre.textContent=s.log.join('\n');if(fim)pre.scrollTop=pre.scrollHeight;

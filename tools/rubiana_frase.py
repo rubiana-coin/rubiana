@@ -9,10 +9,10 @@ import unicodedata
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 HASH_LISTA = "2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda"
-# Prefixos de chave estendida (os mesmos de chainparams.cpp). A rede principal
-# fica de fora ate decidirmos o numero de moeda do caminho de derivacao.
-PREFIXOS = {"testnet": bytes([0x04, 0x0D, 0x5A, 0x57]), "regtest": bytes([0x04, 0x0D, 0x5A, 0x57])}
-MOEDA = {"testnet": 1, "regtest": 1}
+# Prefixos de chave estendida (os mesmos de chainparams.cpp) e numero de moeda
+# do caminho de derivacao (a rede principal usa 8686).
+PREFIXOS = {"testnet": bytes([0x04, 0x0D, 0x5A, 0x57]), "regtest": bytes([0x04, 0x0D, 0x5A, 0x57]), "principal": bytes([0x04, 0x0B, 0xEE, 0x6E])}
+MOEDA = {"testnet": 1, "regtest": 1, "principal": 8686}
 _LISTA = None
 
 

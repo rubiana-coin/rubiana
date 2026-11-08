@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rubiana - minerador solo para PC (v0).
 Sobe o no, cria a carteira e minera sozinho para o seu endereco.
-Uso: python3 tools/rubiana-mine.py [--rede testnet|regtest] [--threads N] [--full] [--blocks N]
+Uso: python3 tools/rubiana-mine.py [--rede testnet|principal|regtest] [--threads N] [--full] [--blocks N]
 Ctrl+C para parar."""
 import argparse
 import json
@@ -12,12 +12,14 @@ import time
 
 # No de entrada da rede de teste (ponto de encontro dos mineradores)
 NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805", "iriguchi.proxy.rlwy.net:57877"]
+# Nos de entrada da rede principal (preencher antes do lancamento)
+NOS_PRINCIPAL = []
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--rede", default="testnet", choices=["testnet", "regtest"])
+ap.add_argument("--rede", default="testnet", choices=["testnet", "principal", "regtest"])
 ap.add_argument("--threads", type=int, default=max(1, (os.cpu_count() or 2) // 2))
 ap.add_argument("--full", action="store_true", help="modo completo (precisa de 2 GB de memoria livre)")
 ap.add_argument("--blocks", type=int, default=0, help="parar depois de N blocos (0 = ate Ctrl+C)")
@@ -40,7 +42,7 @@ if args.config and os.path.exists(args.config):
             else:
                 print("configuracao.txt: valor invalido em 'processadores' (use automatico ou um numero). Usando automatico.")
 
-flag = ["-" + args.rede]
+flag = [] if args.rede == "principal" else ["-" + args.rede]
 def _nos_extras():
     arq = os.path.join(RAIZ, "nos.txt")
     extras = []
@@ -52,7 +54,9 @@ def _nos_extras():
     return extras
 
 
-ADDNODES = ["-addnode=" + n for n in NOS_DE_ENTRADA + _nos_extras()] if args.rede == "testnet" else []
+NOS_REDE = NOS_DE_ENTRADA if args.rede == "testnet" else NOS_PRINCIPAL if args.rede == "principal" else []
+ADDNODES = ["-addnode=" + n for n in NOS_REDE + _nos_extras()] if args.rede in ("testnet", "principal") else []
+NOME_REDE = "rede de teste" if args.rede == "testnet" else "rede principal" if args.rede == "principal" else "rede local (regtest)"
 EXT = ".exe" if os.name == "nt" else ""
 daemon = os.path.join(args.bin, "rubianad" + EXT)
 cli_path = os.path.join(args.bin, "rubiana-cli" + EXT)
@@ -88,7 +92,7 @@ if code != 0 and "-28" not in out:
     started = True
 
 if not started and ADDNODES:
-    for _n in NOS_DE_ENTRADA + _nos_extras():
+    for _n in NOS_REDE + _nos_extras():
         cli("addnode", _n, "add")
 
 t0 = time.time()
@@ -126,7 +130,7 @@ if not addr:
 modo = "completo" if args.full else "leve"
 nconn = 0
 if ADDNODES:
-    print("conectando ao no de entrada da rede de teste (" + ", ".join(NOS_DE_ENTRADA + _nos_extras()) + ")...", flush=True)
+    print("conectando ao no de entrada da " + NOME_REDE + " (" + ", ".join(NOS_REDE + _nos_extras()) + ")...", flush=True)
     for _ in range(30):
         code, out = cli("getconnectioncount")
         if code == 0 and out.isdigit() and int(out) > 0:
@@ -134,7 +138,7 @@ if ADDNODES:
             break
         time.sleep(1)
     if nconn > 0:
-        print("conectado a rede de teste. Sincronizando blocos...", flush=True)
+        print("conectado a " + NOME_REDE + ". Sincronizando blocos...", flush=True)
         ultimo, parado, t1 = -1, 0, time.time()
         while time.time() - t1 < 180 and parado < 5:
             code, alt = cli("getblockcount")
@@ -146,7 +150,7 @@ if ADDNODES:
             time.sleep(2)
         print("sincronizado, altura " + str(ultimo))
     else:
-        print("AVISO: nao consegui conectar a rede de teste. Voce vai minerar sozinho, sem os outros.")
+        print("AVISO: nao consegui conectar a " + NOME_REDE + ". Voce vai minerar sozinho, sem os outros.")
 print("endereco de mineracao: " + addr)
 print("seu computador tem " + str(os.cpu_count()) + " nucleos; usando " + str(args.threads) + " para minerar (" + origem + ").")
 print("minerando solo na " + args.rede + ": " + str(args.threads) + " thread(s), modo " + modo + ". Ctrl+C para parar.", flush=True)
