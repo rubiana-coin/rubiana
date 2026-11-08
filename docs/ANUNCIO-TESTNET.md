@@ -6,7 +6,7 @@ A Rubiana é uma moeda digital experimental, de código aberto, derivada do Bitc
 
 **O que existe hoje:** rede de teste pública, pacote de Windows de clique duplo com uma janela no navegador (minerar, carteira com frase de recuperação de 12 ou 24 palavras e explorador de blocos), mineração solo, nó de entrada. **O que NÃO existe ainda:** rede principal, aplicativo de celular (vem logo depois), pools públicas, auditoria externa.
 
-**Como participar:** Windows: [LINK DA RELEASE]. Linux: veja o README para compilar.
+**Como participar:** Windows: https://github.com/rubiana-coin/rubiana/releases/tag/testnet-v0.1. Linux: veja o README para compilar.
 
 **O que queremos saber:** problemas de instalação, avisos de antivírus, travamentos, falhas de sincronização, comportamento da dificuldade, uso de processador e memória, e revisão do código (consenso e RandomX).
 
@@ -26,7 +26,7 @@ Rubiana is an experimental open-source cryptocurrency forked from Bitcoin Core, 
 
 **Exists today:** public test network, one-click Windows package with a browser window (mining, wallet with a 12 or 24 word recovery phrase, block explorer), solo mining, an entry node. **Does not exist yet:** main network, phone app (coming soon after), public pools, external audit.
 
-**How to join:** Windows: [RELEASE LINK]. Linux: see the README to build.
+**How to join:** Windows: https://github.com/rubiana-coin/rubiana/releases/tag/testnet-v0.1. Linux: see the README to build.
 
 **What we want to hear:** install problems, antivirus warnings, crashes, sync failures, difficulty behaviour, CPU and memory use, and code review (consensus and RandomX).
 
