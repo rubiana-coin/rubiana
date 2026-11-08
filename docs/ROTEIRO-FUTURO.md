@@ -21,3 +21,9 @@ Atualizado em 06/11/2026.
 - Segundo nó de entrada (outra região ou outra pessoa).
 - Migração do repositório para a conta do projeto.
 - Depois do PC: Android (medir o RandomX em ARM), explorador público, gráficos na janela e senha da carteira.
+
+## Android e pools (planejado)
+- Aplicativo de Android com as mesmas abas do PC (minerar, blocos e carteira) e mais uma de pools.
+- O modo pool talvez dispense o nó completo no celular (a confirmar no código).
+- Pools: primeiro um teste só na rede de teste, com pagamento automático e frequente para a carteira de cada minerador; na rede principal, pools de terceiros, e o nosso opcional.
+- Modo pool no minerador do PC: depois que a rede de teste pública começar.
