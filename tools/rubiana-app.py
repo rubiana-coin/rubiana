@@ -32,6 +32,11 @@ if sys.stdout is None or sys.stderr is None:
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
+PY_CONSOLE = sys.executable
+if os.name == "nt" and os.path.basename(sys.executable).lower() == "pythonw.exe":
+    _py_console = os.path.join(os.path.dirname(sys.executable), "python.exe")
+    if os.path.exists(_py_console):
+        PY_CONSOLE = _py_console
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--rede", default="testnet", choices=["testnet", "principal", "regtest"])
@@ -182,6 +187,7 @@ def ler_saida(p):
         if not linha:
             continue
         LOG.append(linha)
+        print("[minerador] " + linha, flush=True)
         if re.match(r"^bloco \d+:", linha):
             MIN["achados"] += 1
         m = re.search(r"([0-9.]+)\s*H/s", linha)
@@ -201,7 +207,7 @@ def iniciar(corpo):
             return {"erro": "ja esta minerando"}
         if not CART["pronta"]:
             return {"erro": "Crie ou restaure a sua carteira antes de minerar (aba Carteira)."}
-        cmd = [sys.executable, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads), "--carteira", CARTEIRA_NOME]
+        cmd = [PY_CONSOLE, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads), "--carteira", CARTEIRA_NOME]
         if corpo.get("full"):
             cmd.append("--full")
         env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")

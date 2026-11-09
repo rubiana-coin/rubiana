@@ -6,7 +6,7 @@ import subprocess
 
 
 def rpc(cli, *a):
-    r = subprocess.run(cli + [str(x) for x in a], capture_output=True, text=True, creationflags=(0x08000000 if os.name == "nt" else 0))
+    r = subprocess.run(cli + [str(x) for x in a], capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError(r.stderr.strip() or r.stdout.strip())
     return r.stdout.strip()

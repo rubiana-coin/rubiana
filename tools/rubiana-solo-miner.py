@@ -26,7 +26,7 @@ CLI = args.cli.split("|") if "|" in args.cli else args.cli.split()
 
 
 def rpc(*a):
-    r = subprocess.run(CLI + [str(x) for x in a], capture_output=True, text=True, creationflags=(0x08000000 if os.name == "nt" else 0))
+    r = subprocess.run(CLI + [str(x) for x in a], capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError(r.stderr.strip() or r.stdout.strip())
     return r.stdout.strip()
@@ -97,7 +97,7 @@ def make_job(t, spk):
 class Engine:
     def __init__(self):
         cmd = [args.miner, "--threads", str(args.threads)] + (["--full"] if args.full else [])
-        self.p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1, creationflags=(0x08000000 if os.name == "nt" else 0))
+        self.p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
         self.q = queue.Queue()
         threading.Thread(target=self._reader, daemon=True).start()
 
