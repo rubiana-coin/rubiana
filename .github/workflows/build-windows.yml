@@ -48,6 +48,8 @@ jobs:
         run: cmake --build build -j $(nproc) --target bitcoin bitcoind bitcoin-cli bitcoin-tx bitcoin-util bitcoin-wallet
       - name: Compilar o motor de mineracao
         run: x86_64-w64-mingw32-g++-posix -O2 -std=c++17 -static -o build/bin/rubiana-miner.exe tools/rubiana-miner.cpp -I src/randomx/src $(find build -name librandomx.a | head -1) -lpthread
+      - name: Compilar o lancador (Rubiana.exe)
+        run: x86_64-w64-mingw32-g++-posix -O2 -std=c++17 -static -mwindows -municode -o build/bin/Rubiana.exe tools/rubiana-launcher.cpp
       - name: Listar
         run: ls -l build/bin
       - name: Conferir que abre (Wine)
@@ -68,6 +70,7 @@ jobs:
           cp build/bin/rubianad.exe build/bin/rubiana-cli.exe build/bin/rubiana-miner.exe pacote/rubiana/build/bin/
           cp tools/rubiana-mine.py tools/rubiana-solo-miner.py tools/rubiana-app.py tools/rubiana-explorer.py tools/rubiana_common.py tools/rubiana_carteira.py tools/rubiana_frase.py tools/bip39-english.txt pacote/rubiana/tools/
           cp packaging/windows/* pacote/rubiana/
+          cp build/bin/Rubiana.exe pacote/rubiana/
           sed -i 's/$/\r/' pacote/rubiana/*.bat pacote/rubiana/configuracao.txt pacote/rubiana/LEIA-ME.txt
           cp COPYING pacote/rubiana/COPYING.txt
           curl -fsSL -o python-embed.zip https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip

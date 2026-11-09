@@ -69,7 +69,7 @@ CLI = [cli_path] + flag
 
 def cli(*a, wallet=False):
     cmd = CLI + (["-rpcwallet=" + args.carteira] if wallet else []) + [str(x) for x in a]
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, text=True, creationflags=(0x08000000 if os.name == "nt" else 0))
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
 
 

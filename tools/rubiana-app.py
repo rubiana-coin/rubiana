@@ -19,6 +19,16 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
+if sys.stdout is None or sys.stderr is None:
+    # Sem console (pythonw): registra as mensagens em um arquivo.
+    _pasta_log = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "Rubiana")
+    os.makedirs(_pasta_log, exist_ok=True)
+    _arq_log = open(os.path.join(_pasta_log, "janela.log"), "w", encoding="utf-8", buffering=1)
+    if sys.stdout is None:
+        sys.stdout = _arq_log
+    if sys.stderr is None:
+        sys.stderr = _arq_log
+
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
@@ -54,7 +64,7 @@ _NO = {"t": 0.0, "v": {}}
 def cli(*a, wallet=False):
     cmd = CLI + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in a]
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=30, creationflags=(0x08000000 if os.name == "nt" else 0))
     except subprocess.TimeoutExpired:
         return 1, "tempo esgotado"
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
@@ -64,7 +74,7 @@ def cli_stdin(args_list, linhas, wallet=False, timeout=900):
     # Para segredos: os valores vao pela entrada padrao, nunca pela linha de comando.
     cmd = CLI + ["-stdin", "-rpcclienttimeout=0"] + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in args_list]
     try:
-        r = subprocess.run(cmd, input="\n".join(linhas) + "\n", capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(cmd, input="\n".join(linhas) + "\n", capture_output=True, text=True, timeout=timeout, creationflags=(0x08000000 if os.name == "nt" else 0))
     except subprocess.TimeoutExpired:
         return 1, "tempo esgotado"
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
@@ -195,7 +205,7 @@ def iniciar(corpo):
         if corpo.get("full"):
             cmd.append("--full")
         env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
-        kw = {"creationflags": 0x00000200} if os.name == "nt" else {"start_new_session": True}
+        kw = {"creationflags": 0x00000200 | 0x08000000} if os.name == "nt" else {"start_new_session": True}
         LOG.clear()
         MIN["achados"], MIN["taxa"] = 0, ""
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", bufsize=1, env=env, **kw)
@@ -210,7 +220,7 @@ def parar_mineracao():
         if not p or p.poll() is not None:
             return
         if os.name == "nt":
-            subprocess.run(["taskkill", "/PID", str(p.pid), "/T", "/F"], capture_output=True)
+            subprocess.run(["taskkill", "/PID", str(p.pid), "/T", "/F"], capture_output=True, creationflags=(0x08000000 if os.name == "nt" else 0))
         else:
             try:
                 os.killpg(os.getpgid(p.pid), signal.SIGTERM)
