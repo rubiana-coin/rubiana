@@ -19,24 +19,9 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
-if sys.stdout is None or sys.stderr is None:
-    # Sem console (pythonw): registra as mensagens em um arquivo.
-    _pasta_log = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "Rubiana")
-    os.makedirs(_pasta_log, exist_ok=True)
-    _arq_log = open(os.path.join(_pasta_log, "janela.log"), "w", encoding="utf-8", buffering=1)
-    if sys.stdout is None:
-        sys.stdout = _arq_log
-    if sys.stderr is None:
-        sys.stderr = _arq_log
-
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
 sys.path.insert(0, AQUI)
-PY_CONSOLE = sys.executable
-if os.name == "nt" and os.path.basename(sys.executable).lower() == "pythonw.exe":
-    _py_console = os.path.join(os.path.dirname(sys.executable), "python.exe")
-    if os.path.exists(_py_console):
-        PY_CONSOLE = _py_console
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--rede", default="testnet", choices=["testnet", "principal", "regtest"])
@@ -69,7 +54,7 @@ _NO = {"t": 0.0, "v": {}}
 def cli(*a, wallet=False):
     cmd = CLI + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in a]
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=30, creationflags=(0x08000000 if os.name == "nt" else 0))
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     except subprocess.TimeoutExpired:
         return 1, "tempo esgotado"
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
@@ -79,7 +64,7 @@ def cli_stdin(args_list, linhas, wallet=False, timeout=900):
     # Para segredos: os valores vao pela entrada padrao, nunca pela linha de comando.
     cmd = CLI + ["-stdin", "-rpcclienttimeout=0"] + (["-rpcwallet=" + CARTEIRA_NOME] if wallet else []) + [str(x) for x in args_list]
     try:
-        r = subprocess.run(cmd, input="\n".join(linhas) + "\n", capture_output=True, text=True, timeout=timeout, creationflags=(0x08000000 if os.name == "nt" else 0))
+        r = subprocess.run(cmd, input="\n".join(linhas) + "\n", capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         return 1, "tempo esgotado"
     return r.returncode, (r.stdout.strip() or r.stderr.strip())
@@ -187,7 +172,6 @@ def ler_saida(p):
         if not linha:
             continue
         LOG.append(linha)
-        print("[minerador] " + linha, flush=True)
         if re.match(r"^bloco \d+:", linha):
             MIN["achados"] += 1
         m = re.search(r"([0-9.]+)\s*H/s", linha)
@@ -207,11 +191,11 @@ def iniciar(corpo):
             return {"erro": "ja esta minerando"}
         if not CART["pronta"]:
             return {"erro": "Crie ou restaure a sua carteira antes de minerar (aba Carteira)."}
-        cmd = [PY_CONSOLE, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads), "--carteira", CARTEIRA_NOME]
+        cmd = [sys.executable, os.path.join(AQUI, "rubiana-mine.py"), "--rede", args.rede, "--bin", args.bin, "--threads", str(threads), "--carteira", CARTEIRA_NOME]
         if corpo.get("full"):
             cmd.append("--full")
         env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
-        kw = {"creationflags": 0x00000200 | 0x08000000} if os.name == "nt" else {"start_new_session": True}
+        kw = {"creationflags": 0x00000200} if os.name == "nt" else {"start_new_session": True}
         LOG.clear()
         MIN["achados"], MIN["taxa"] = 0, ""
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", bufsize=1, env=env, **kw)
@@ -226,7 +210,7 @@ def parar_mineracao():
         if not p or p.poll() is not None:
             return
         if os.name == "nt":
-            subprocess.run(["taskkill", "/PID", str(p.pid), "/T", "/F"], capture_output=True, creationflags=(0x08000000 if os.name == "nt" else 0))
+            subprocess.run(["taskkill", "/PID", str(p.pid), "/T", "/F"], capture_output=True)
         else:
             try:
                 os.killpg(os.getpgid(p.pid), signal.SIGTERM)
@@ -534,42 +518,12 @@ def pagina(html):
     return html
 
 
-def abrir_janela(url):
-    # No Windows abre uma janela de aplicativo (Edge ou Chrome, sem abas nem barra de endereco).
-    if os.name == "nt":
-        bases = [os.environ.get("ProgramFiles(x86)", ""), os.environ.get("ProgramFiles", ""), os.environ.get("LOCALAPPDATA", "")]
-        perfil = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), "Rubiana", "janela-perfil")
-        for b in bases:
-            if not b:
-                continue
-            for rel in (("Microsoft", "Edge", "Application", "msedge.exe"), ("Google", "Chrome", "Application", "chrome.exe")):
-                exe = os.path.join(b, *rel)
-                if os.path.exists(exe):
-                    try:
-                        return subprocess.Popen([exe, "--app=" + url, "--user-data-dir=" + perfil, "--no-first-run", "--no-default-browser-check", "--disable-background-mode", "--window-size=1180,860"])
-                    except OSError:
-                        pass
-    webbrowser.open(url)
-    return None
-
-
-def vigiar_janela(proc):
-    t0 = time.time()
-    proc.wait()
-    if time.time() - t0 < 5:
-        return
-    time.sleep(1)
-    servidor.shutdown()
-
-
 garantir_no()
 url = "http://127.0.0.1:%d/?t=%s" % (PORTA, TOKEN)
 print("Janela da Rubiana: " + url, flush=True)
 print("(a senha no endereco vale so enquanto este programa estiver aberto; Ctrl+C encerra)", flush=True)
 if not args.no_browser:
-    janela = abrir_janela(url)
-    if janela is not None:
-        threading.Thread(target=vigiar_janela, args=(janela,), daemon=True).start()
+    webbrowser.open(url)
 try:
     servidor.serve_forever()
 except KeyboardInterrupt:
