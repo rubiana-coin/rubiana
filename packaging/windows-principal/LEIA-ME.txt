@@ -27,6 +27,14 @@ SUA CARTEIRA - LEIA COM ATENCAO
  existe suporte, senha esquecida ou recuperacao por e-mail.
  Nunca digite essas palavras em site nenhum.
 
+FIREWALL E RELOGIO
+ - Na primeira vez, o Windows pergunta se pode liberar o programa na
+   rede. Clique em "Permitir acesso" (so "Redes privadas" ja basta).
+   Se negar, o programa ainda funciona, mas ajuda menos a rede.
+ - Deixe o relogio do Windows certo (sincronizado com a internet).
+   Se ele estiver errado em mais de 10 minutos, o programa pode
+   recusar blocos validos.
+
 AVISOS
  - O Windows pode mostrar o aviso azul (SmartScreen). O programa nao e
    assinado digitalmente. Para abrir: "Mais informacoes", "Executar

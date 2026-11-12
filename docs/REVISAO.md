@@ -17,6 +17,8 @@ A Rubiana é um fork do Bitcoin Core: a maior parte do código é a dele, e o qu
 - **Bloco inicial da rede principal:** hora 1797087600 (12/12/2026, 15:00 UTC), nonce 161, hash `bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677`, com uma mensagem gravada no bloco. O nó se recusa a iniciar se o bloco não conferir com o hash fixo no código.
 - As regras modernas do Bitcoin (SegWit, Taproot) estão ativas desde o bloco 1.
 
+- **Horário dos blocos:** um bloco só vale se o horário dele for no máximo 10 minutos à frente do relógio do nó (`MAX_FUTURE_BLOCK_TIME`, em `src/chain.h`; o Bitcoin Core usa 2 horas). Motivo: o bloco inicial da rede principal tem horário marcado (12/12/2026, 15:00 UTC), e um limite de 2 horas deixaria alguém preparar até cerca de 24 blocos escondidos antes da largada; com 10 minutos o adiantamento cai para 2 ou 3 blocos. Em `src/node/chainstate.cpp`, a checagem de "bloco do futuro" ignora o bloco inicial, senão o nó não reiniciaria antes da data.
+
 ## Onde pedimos atenção especial
 1. Integração do RandomX (`src/pow.cpp`): uso de memória das chaves em cache, segurança entre threads e o custo de conferir cabeçalhos (ataque com cabeçalhos falsos).
 2. A troca de chave a cada 2 dias: o que acontece perto da virada, já que a época vem do horário do próprio cabeçalho.
