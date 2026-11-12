@@ -20,6 +20,3 @@ miner_tests (trava depois de trocar o hash dos geradores de bloco pelo RandomX; 
 
 ## O que já foi corrigido
 Os geradores de bloco dos testes usavam o hash do Bitcoin; agora usam o RandomX, como o nó. Isso fez 15 suítes passarem de falha para sucesso.
-
-## O que já foi corrigido
-Os geradores de bloco dos testes usavam o hash do Bitcoin; agora usam o RandomX, como o nó. Isso fez 15 suítes passarem de falha para sucesso.
