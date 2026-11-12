@@ -131,6 +131,13 @@ def main():
     if eng.q.get(timeout=60)[0] != "READY":
         sys.exit("o motor nao ficou pronto")
     print(f"motor pronto: {args.threads} thread(s), modo {'completo' if args.full else 'leve'}")
+    # Espera a hora do bloco inicial (largada justa na rede principal)
+    h0 = rpc("getblockhash", "0").strip()
+    t0 = json.loads(rpc("getblockheader", h0))["time"]
+    while time.time() < t0:
+        falta = int(t0 - time.time())
+        print(f"aguardando o inicio da rede: faltam {falta // 3600}h {falta % 3600 // 60}min {falta % 60}s", flush=True)
+        time.sleep(min(30, max(1, falta)))
     found = 0
     job_id = 0
     last = (0, 0.0)
