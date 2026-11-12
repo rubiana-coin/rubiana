@@ -8,12 +8,23 @@ on:
         required: false
         default: ""
 
+      rede:
+        description: "Rede do pacote"
+        type: choice
+        options:
+          - testnet
+          - principal
+        default: testnet
+
 permissions:
   contents: write
 
 jobs:
   windows:
     runs-on: ubuntu-24.04
+    env:
+      REDE: ${{ inputs.rede }}
+      TAG: ${{ inputs.tag }}
     steps:
       - uses: actions/checkout@v4
       - name: Instalar dependencias
@@ -42,6 +53,12 @@ jobs:
             depends/sources
             depends/x86_64-w64-mingw32
           key: windows-depends-${{ hashFiles('depends/packages/**', 'depends/*.mk') }}
+      - name: Marcar como versao final (rede principal)
+        if: ${{ inputs.rede == 'principal' }}
+        run: |
+          grep -q 'set(CLIENT_VERSION_IS_RELEASE "false")' CMakeLists.txt
+          sed -i 's/set(CLIENT_VERSION_IS_RELEASE "false")/set(CLIENT_VERSION_IS_RELEASE "true")/' CMakeLists.txt
+          grep -n "CLIENT_VERSION_IS_RELEASE" CMakeLists.txt
       - name: Configurar
         run: cmake -B build --toolchain depends/x86_64-w64-mingw32/toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_IPC=OFF
       - name: Compilar
@@ -68,8 +85,17 @@ jobs:
           cp build/bin/rubianad.exe build/bin/rubiana-cli.exe build/bin/rubiana-miner.exe pacote/rubiana/build/bin/
           cp tools/rubiana-mine.py tools/rubiana-solo-miner.py tools/rubiana-app.py tools/rubiana-explorer.py tools/rubiana_common.py tools/rubiana_carteira.py tools/rubiana_frase.py tools/bip39-english.txt pacote/rubiana/tools/
           cp packaging/windows/* pacote/rubiana/
+          if [ "$REDE" = "principal" ]; then
+            if [ -n "$TAG" ] && grep -q '^NOS_PRINCIPAL = \[\]' tools/rubiana-mine.py; then
+              echo "ERRO: NOS_PRINCIPAL vazio em tools/rubiana-mine.py. Preencha antes de publicar."; exit 1
+            fi
+            sed -i 's/--rede testnet/--rede principal/; s/REDE DE TESTE/REDE PRINCIPAL/; s/As moedas desta rede de teste NAO tem valor\./Rede real: anote a frase de recuperacao no papel./' pacote/rubiana/*.bat
+            sed -i 's/rede de teste/rede principal/; s/:18686/:8686/' pacote/rubiana/nos.txt
+            cp packaging/windows-principal/LEIA-ME.txt pacote/rubiana/LEIA-ME.txt
+          fi
           sed -i 's/$/\r/' pacote/rubiana/*.bat pacote/rubiana/configuracao.txt pacote/rubiana/LEIA-ME.txt
           cp COPYING pacote/rubiana/COPYING.txt
+          cp src/randomx/LICENSE pacote/rubiana/LICENSE-RandomX.txt
           curl -fsSL -o python-embed.zip https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip
           echo "$(cat packaging/python-embed.sha256)  python-embed.zip" | sha256sum -c -
           unzip -q python-embed.zip -d pacote/rubiana/python
@@ -80,7 +106,7 @@ jobs:
           name: rubiana-windows-pacote
           path: rubiana-windows-pacote.zip
       - name: Publicar na Release (opcional)
-        if: ${{ inputs.tag != '' }}
+        if: ${{ inputs.tag != '' && inputs.rede != 'principal' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
@@ -89,3 +115,12 @@ jobs:
           cp rubiana-windows-pacote.zip "rubiana-windows-${TAG}.zip"
           sha256sum "rubiana-windows-${TAG}.zip" > SHA256SUMS.txt
           gh release create "$TAG" "rubiana-windows-${TAG}.zip" SHA256SUMS.txt --prerelease --target "$GITHUB_SHA" --title "Rubiana ${TAG} (rede de teste)" --notes "Pacote de Windows da rede de teste. As moedas nao tem valor. Confira o SHA-256 em SHA256SUMS.txt. Veja o LEIA-ME dentro do pacote."
+      - name: Publicar na Release da rede principal (opcional)
+        if: ${{ inputs.tag != '' && inputs.rede == 'principal' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          cp rubiana-windows-pacote.zip "rubiana-windows-${TAG}.zip"
+          sha256sum "rubiana-windows-${TAG}.zip" > SHA256SUMS.txt
+          gh release create "$TAG" "rubiana-windows-${TAG}.zip" SHA256SUMS.txt --target "$GITHUB_SHA" --title "Rubiana ${TAG} (rede principal)" --notes "Pacote de Windows da rede principal da Rubiana. Rede real, comeca em 12/12/2026 as 15:00 UTC (12:00 em Brasilia). Software experimental, sem auditoria externa. Confira o SHA-256 em SHA256SUMS.txt e leia o LEIA-ME dentro do pacote. Guarde a frase de recuperacao: sem ela nao ha como recuperar a carteira."

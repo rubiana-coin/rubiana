@@ -1,0 +1,46 @@
+RUBIANA - REDE PRINCIPAL (versao 0.1.0)
+=======================================
+
+Esta e a rede REAL da Rubiana. Ela comeca em 12/12/2026, as 15:00 UTC
+(12:00 em Brasilia). O programa e experimental e NAO teve auditoria
+externa. Ninguem promete valor para as moedas. Nao use dinheiro que
+voce nao pode perder.
+
+COMO USAR (janela completa: minerar, carteira e blocos)
+ De dois cliques em janela.bat. Abre uma pagina no seu navegador, so
+ neste computador, com tres abas: Minerar, Carteira e Blocos.
+ Para encerrar, use o botao "Sair" da pagina.
+
+SO MINERAR (sem a janela)
+ minerar.bat usa metade dos nucleos do computador.
+ minerar-leve.bat usa 1 nucleo.
+ Para mudar o numero de nucleos, edite configuracao.txt.
+
+PARA PARAR
+ Aperte Ctrl+C na janela preta. Se voce fechou a janela pelo X, de
+ dois cliques em parar.bat.
+
+SUA CARTEIRA - LEIA COM ATENCAO
+ Ao criar a carteira, o programa mostra 12 (ou 24) palavras. Anote no
+ papel e guarde em lugar seguro. Quem tiver essas palavras controla
+ as suas moedas. Sem elas, NAO ha como recuperar a carteira. Nao
+ existe suporte, senha esquecida ou recuperacao por e-mail.
+ Nunca digite essas palavras em site nenhum.
+
+AVISOS
+ - O Windows pode mostrar o aviso azul (SmartScreen). O programa nao e
+   assinado digitalmente. Para abrir: "Mais informacoes", "Executar
+   assim mesmo". Confira antes o SHA-256 do .zip na pagina da Release.
+ - Antivirus podem marcar programas de mineracao como suspeitos.
+ - O seu endereco IP fica visivel para os nos aos quais voce conecta.
+ - Minerar esquenta o computador e gasta energia. Use so metade dos
+   nucleos se o computador ficar quente ou lento.
+ - Nao minere em computador de terceiros ou do trabalho sem permissao.
+
+LICENCAS
+ COPYING.txt (Bitcoin Core) e LICENSE-RandomX.txt (RandomX).
+
+CODIGO E CONTATO
+ github.com/rubiana-coin/rubiana
+ Problemas: abra uma issue. Vulnerabilidades: aba Security, "Report a
+ vulnerability" (relato privado).
