@@ -27,6 +27,26 @@ SUA CARTEIRA - LEIA COM ATENCAO
  existe suporte, senha esquecida ou recuperacao por e-mail.
  Nunca digite essas palavras em site nenhum.
 
+FIREWALL E RELOGIO
+ - Na primeira vez, o Windows pergunta se pode liberar o programa na
+   rede. Clique em "Permitir acesso" (so "Redes privadas" ja basta).
+   Se negar, o programa ainda funciona, mas ajuda menos a rede.
+ - Deixe o relogio do Windows certo (sincronizado com a internet).
+   Se ele estiver errado em mais de 10 minutos, o programa pode
+   recusar blocos validos.
+
+CONEXOES (o que significa "Conexoes 0")
+ Conexoes e o numero de outros computadores da rede ligados ao seu.
+ Se estiver em 0, voce esta sozinho e os blocos que minerar podem ser
+ descartados. Confira:
+ - O computador esta ligado a internet.
+ - O Windows nao bloqueou o programa no Firewall (veja acima).
+ - Espere um ou dois minutos depois de abrir.
+ - Antes do inicio da rede (12/12/2026, 15:00 UTC) pode haver poucos
+   computadores ligados.
+ Se continuar em 0, clique em "Sair", abra de novo e, se nao
+ resolver, abra uma issue no GitHub.
+
 AVISOS
  - O Windows pode mostrar o aviso azul (SmartScreen). O programa nao e
    assinado digitalmente. Para abrir: "Mais informacoes", "Executar

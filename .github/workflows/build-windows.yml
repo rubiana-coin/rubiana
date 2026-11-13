@@ -16,23 +16,12 @@ on:
           - principal
         default: testnet
 
-      rede:
-        description: "Rede do pacote"
-        type: choice
-        options:
-          - testnet
-          - principal
-        default: testnet
-
 permissions:
   contents: write
 
 jobs:
   windows:
     runs-on: ubuntu-24.04
-    env:
-      REDE: ${{ inputs.rede }}
-      TAG: ${{ inputs.tag }}
     env:
       REDE: ${{ inputs.rede }}
       TAG: ${{ inputs.tag }}
@@ -64,12 +53,6 @@ jobs:
             depends/sources
             depends/x86_64-w64-mingw32
           key: windows-depends-${{ hashFiles('depends/packages/**', 'depends/*.mk') }}
-      - name: Marcar como versao final (rede principal)
-        if: ${{ inputs.rede == 'principal' }}
-        run: |
-          grep -q 'set(CLIENT_VERSION_IS_RELEASE "false")' CMakeLists.txt
-          sed -i 's/set(CLIENT_VERSION_IS_RELEASE "false")/set(CLIENT_VERSION_IS_RELEASE "true")/' CMakeLists.txt
-          grep -n "CLIENT_VERSION_IS_RELEASE" CMakeLists.txt
       - name: Marcar como versao final (rede principal)
         if: ${{ inputs.rede == 'principal' }}
         run: |
@@ -112,7 +95,6 @@ jobs:
           fi
           sed -i 's/$/\r/' pacote/rubiana/*.bat pacote/rubiana/configuracao.txt pacote/rubiana/LEIA-ME.txt
           cp COPYING pacote/rubiana/COPYING.txt
-          cp src/randomx/LICENSE pacote/rubiana/LICENSE-RandomX.txt
           cp src/randomx/LICENSE pacote/rubiana/LICENSE-RandomX.txt
           curl -fsSL -o python-embed.zip https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip
           echo "$(cat packaging/python-embed.sha256)  python-embed.zip" | sha256sum -c -
