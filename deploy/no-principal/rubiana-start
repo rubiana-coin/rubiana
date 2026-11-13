@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir -p /data/principal
+exec rubianad -datadir=/data/principal -printtoconsole -disablewallet -dnsseed=0 -fixedseeds=0 -listenonion=0 -dbcache=64 -maxconnections=60
