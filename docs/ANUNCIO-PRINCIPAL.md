@@ -18,6 +18,8 @@ A Rubiana e uma moeda digital experimental, de codigo aberto, derivada do Bitcoi
 
 **Se algo der muito errado:** erros encontrados depois do inicio serao corrigidos, sempre que possivel, com uma nova versao do programa. Reiniciar a rede com um novo bloco inicial e a ultima hipotese, so se a cadeia ficar permanentemente quebrada, e nesse caso as moedas da rede antiga nao passam para a nova. O risco e pequeno, mas existe, principalmente nas primeiras semanas.
 
+**Se algo der muito errado:** erros encontrados depois do inicio serao corrigidos, sempre que possivel, com uma nova versao do programa. Reiniciar a rede com um novo bloco inicial e a ultima hipotese, so se a cadeia ficar permanentemente quebrada, e nesse caso as moedas da rede antiga nao passam para a nova. O risco e pequeno, mas existe, principalmente nas primeiras semanas.
+
 **Avisos:**
 - Esta e a rede real, mas o software e experimental e sem auditoria. Nao existe garantia de valor nem de funcionamento.
 - Anote a frase de recuperacao da carteira no papel: sem ela nao ha como recuperar as moedas.
@@ -44,6 +46,8 @@ Rubiana is an experimental, open source digital currency derived from Bitcoin Co
 **How to join:** Windows: [RELEASE LINK]. Check the .zip SHA-256 in SHA256SUMS.txt. Linux: see the README to build.
 
 **Test status (no sugar-coating):** 26 of the 157 unit test suites inherited from Bitcoin Core fail. Most check Bitcoin values that Rubiana changed on purpose, and 3 are still under investigation. The full list is in docs/TESTES.md. The guide for code reviewers is docs/REVISAO.md.
+
+**If something goes badly wrong:** bugs found after the start will be fixed with a new program version whenever possible. Restarting the network with a new genesis block is the last resort, only if the chain ends up permanently broken, and in that case coins from the old network do not carry over. The risk is small, but it exists, mainly in the first weeks.
 
 **If something goes badly wrong:** bugs found after the start will be fixed with a new program version whenever possible. Restarting the network with a new genesis block is the last resort, only if the chain ends up permanently broken, and in that case coins from the old network do not carry over. The risk is small, but it exists, mainly in the first weeks.
 
