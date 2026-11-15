@@ -1,0 +1,4 @@
+Modificações locais em relação ao RandomX original (versão fixada em COMMIT.txt):
+- src/configuration.h: RANDOMX_ARGON_SALT trocado de "RandomX\x03" para "Rubiana\x01".
+  Motivo: a documentação do RandomX recomenda que cada projeto use uma configuração própria (sal único), para impedir ataques de aluguel de poder de mineração e o uso direto de mineradores da Monero.
+  Efeito: o resultado do RandomX da Rubiana passa a ser diferente do da Monero e de outras moedas.
