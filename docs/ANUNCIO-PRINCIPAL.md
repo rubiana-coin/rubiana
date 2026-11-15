@@ -6,7 +6,9 @@ A Rubiana e uma moeda digital experimental, de codigo aberto, derivada do Bitcoi
 
 **Regras:** 86 moedas por bloco, halving a cada 500 mil blocos, um bloco a cada 5 minutos, no maximo 86 milhoes de moedas. Sem ICO, sem venda, sem pre-mineracao, sem promessas de ganho. O criador minera como qualquer outra pessoa, a partir do mesmo bloco inicial. Nao ha empresa, fundacao nem dono da rede: quem quiser pode copiar o codigo e rodar a propria versao.
 
-**Bloco inicial (para conferir):** hora 1797087600 (12/12/2026, 15:00:00 UTC, 12:00 em Brasilia), nonce 161, hash bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677. Mensagem gravada nele: CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins.
+**RandomX:** a Rubiana usa uma configuracao propria do RandomX (um "sal" unico, como a documentacao do RandomX recomenda), diferente da Monero. Assim, o poder de mineracao e os programas feitos para a Monero nao servem direto para a Rubiana, o que dificulta ataques de aluguel de poder no comeco da rede.
+
+**Bloco inicial (para conferir):** hora 1797087600 (12/12/2026, 15:00:00 UTC, 12:00 em Brasilia), nonce 202, hash 4639c99ad5d99bb4ebc8f5bb0574df0555115ded61fa67da08cea705a5ec043f. Mensagem gravada nele: CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins.
 
 **Largada:** os blocos só valem se o horario deles for no maximo 10 minutos a frente do relogio de quem os recebe (no Bitcoin sao 2 horas). Quem preparar blocos escondidos antes do inicio ganha, no maximo, 2 ou 3 blocos de vantagem: nao e zero, e isso esta dito aqui de proposito. O programa oficial espera as 15:00 UTC para comecar a minerar; programas de terceiros nao sao obrigados a isso. Mantenha o relogio do computador certo.
 
@@ -35,7 +37,9 @@ Rubiana is an experimental, open source digital currency derived from Bitcoin Co
 
 **Rules:** 86 coins per block, halving every 500,000 blocks, one block every 5 minutes, at most 86 million coins. No ICO, no sale, no premine, no promises of profit. The creator mines like everyone else, from the same first block. There is no company, foundation or owner of the network: anyone can copy the code and run their own version.
 
-**Genesis block (to verify):** time 1797087600 (12 Dec 2026, 15:00:00 UTC), nonce 161, hash bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677. Message embedded in it: CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins.
+**RandomX:** Rubiana uses its own RandomX configuration (a unique "salt", as the RandomX documentation recommends), different from Monero's. Mining power and programs built for Monero cannot be pointed at Rubiana as they are, which makes hashpower-rental attacks at the start of the network harder.
+
+**Genesis block (to verify):** time 1797087600 (12 Dec 2026, 15:00:00 UTC), nonce 202, hash 4639c99ad5d99bb4ebc8f5bb0574df0555115ded61fa67da08cea705a5ec043f. Message embedded in it: CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins.
 
 **Start:** blocks are only valid if their timestamp is at most 10 minutes ahead of the receiver's clock (Bitcoin allows 2 hours). Anyone who prepares hidden blocks before the start gains at most 2 or 3 blocks of head start: it is not zero, and we say so on purpose. The official program waits until 15:00 UTC to start mining; third-party programs are not bound by that. Keep your computer clock correct.
 

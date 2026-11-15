@@ -8,7 +8,7 @@ Moeda digital experimental, de código aberto, derivada do Bitcoin Core, com min
 
 | | |
 |---|---|
-| Prova de trabalho | RandomX (a chave muda a cada 2 dias) |
+| Prova de trabalho | RandomX com configuração própria (sal único); a chave muda a cada 2 dias |
 | Tempo entre blocos | 5 minutos |
 | Dificuldade | ajustada a cada bloco (LWMA, janela de 60 blocos) |
 | Recompensa inicial | 86 moedas por bloco |
