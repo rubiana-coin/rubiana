@@ -210,3 +210,9 @@ Projeto:
 - 6/12: prazo para os achados. 8/12: código congelado. 8 a 10/12: Release final com SHA256SUMS.txt, teste por outra pessoa e VirusTotal final.
 - 11/12: roteiro e checklist finais. 12/12 às 12:00 em Brasília (15:00 UTC): largada.
 - Depois do lançamento: app de Android, pool, carteira leve, explorador público e registro do tipo de moeda 8686 no SLIP-44.
+
+## ATUALIZAÇÃO (15/11/2026, à noite)
+- 15/11/2026: TESTE DE RESTAURAR A CARTEIRA aprovado (rede principal, pacote novo do Windows): carteira criada em um PC (12 núcleos) e restaurada pelas 12 palavras em outro PC (4 núcleos), com o mesmo endereço de mineração. O minerador mostra a contagem até o início (cerca de 651 h).
+- 15/11/2026: SLIP-44 conferido na lista completa (1521 linhas): o tipo de moeda 8686 NÃO está registrado e nenhuma moeda do registro se chama RUBIA ou Rubiana. Pedir o registro depois do lançamento.
+- 15/11/2026: causas das 3 suítes de teste: ver docs/TESTES.md (relógio fixo dos testes anterior ao bloco inicial da regtest e dados de assumeutxo removidos de propósito).
+- 15/11/2026: o cadastro no monero.social (Matrix) está temporariamente desativado; usar outro servidor do Matrix (o padrão do Element) para entrar nas salas do Monero.
