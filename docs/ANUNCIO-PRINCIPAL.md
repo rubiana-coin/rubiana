@@ -10,11 +10,13 @@ A Rubiana e uma moeda digital experimental, de codigo aberto, derivada do Bitcoi
 
 **Largada:** os blocos só valem se o horario deles for no maximo 10 minutos a frente do relogio de quem os recebe (no Bitcoin sao 2 horas). Quem preparar blocos escondidos antes do inicio ganha, no maximo, 2 ou 3 blocos de vantagem: nao e zero, e isso esta dito aqui de proposito. O programa oficial espera as 15:00 UTC para comecar a minerar; programas de terceiros nao sao obrigados a isso. Mantenha o relogio do computador certo.
 
-**O que existe:** pacote de Windows de clique duplo, com uma janela no navegador (minerar, carteira com frase de recuperacao de 12 ou 24 palavras e explorador de blocos), mineracao solo, nos de entrada. **O que NAO existe ainda:** aplicativo de celular (vem logo depois do lancamento), pools publicas, explorador publico, auditoria externa, programa assinado digitalmente.
+**O que existe:** pacote de Windows de clique duplo, com uma janela no navegador (minerar, carteira com frase de recuperacao de 12 ou 24 palavras e explorador de blocos), mineracao solo, nos de entrada. **O que NAO existe ainda:** aplicativo de celular (planejado para depois do lancamento, sem data), pools publicas, explorador publico, auditoria externa, programa assinado digitalmente.
 
 **Como participar:** Windows: [LINK DA RELEASE]. Confira o SHA-256 do .zip em SHA256SUMS.txt. Linux: veja o README para compilar.
 
 **Estado dos testes (sem maquiagem):** 26 das 157 suites de testes unitarios herdadas do Bitcoin Core falham. A maioria confere valores do Bitcoin que a Rubiana mudou de proposito, e 3 ainda estao em investigacao. A lista completa esta em docs/TESTES.md. O guia para quem quer revisar o codigo esta em docs/REVISAO.md.
+
+**Se algo der muito errado:** erros encontrados depois do inicio serao corrigidos, sempre que possivel, com uma nova versao do programa. Reiniciar a rede com um novo bloco inicial e a ultima hipotese, so se a cadeia ficar permanentemente quebrada, e nesse caso as moedas da rede antiga nao passam para a nova. O risco e pequeno, mas existe, principalmente nas primeiras semanas.
 
 **Avisos:**
 - Esta e a rede real, mas o software e experimental e sem auditoria. Nao existe garantia de valor nem de funcionamento.
@@ -37,11 +39,13 @@ Rubiana is an experimental, open source digital currency derived from Bitcoin Co
 
 **Start:** blocks are only valid if their timestamp is at most 10 minutes ahead of the receiver's clock (Bitcoin allows 2 hours). Anyone who prepares hidden blocks before the start gains at most 2 or 3 blocks of head start: it is not zero, and we say so on purpose. The official program waits until 15:00 UTC to start mining; third-party programs are not bound by that. Keep your computer clock correct.
 
-**What exists:** one-click Windows package with a browser window (mining, wallet with a 12 or 24 word recovery phrase, block explorer), solo mining, entry nodes. **What does not exist yet:** phone app (coming soon after launch), public pools, public explorer, external audit, digitally signed program.
+**What exists:** one-click Windows package with a browser window (mining, wallet with a 12 or 24 word recovery phrase, block explorer), solo mining, entry nodes. **What does not exist yet:** phone app (planned after launch, no date), public pools, public explorer, external audit, digitally signed program.
 
 **How to join:** Windows: [RELEASE LINK]. Check the .zip SHA-256 in SHA256SUMS.txt. Linux: see the README to build.
 
 **Test status (no sugar-coating):** 26 of the 157 unit test suites inherited from Bitcoin Core fail. Most check Bitcoin values that Rubiana changed on purpose, and 3 are still under investigation. The full list is in docs/TESTES.md. The guide for code reviewers is docs/REVISAO.md.
+
+**If something goes badly wrong:** bugs found after the start will be fixed with a new program version whenever possible. Restarting the network with a new genesis block is the last resort, only if the chain ends up permanently broken, and in that case coins from the old network do not carry over. The risk is small, but it exists, mainly in the first weeks.
 
 **Warnings:**
 - This is the real network, but the software is experimental and unaudited. There is no guarantee of value or of correct operation.
