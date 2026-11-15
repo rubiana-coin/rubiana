@@ -166,3 +166,32 @@ Projeto:
 - 04/11/2026: signet e testnet4 DESATIVADAS (args.cpp lança erro claro; -testnet4/-signet/-chain=...); aviso "testnet3 deprecated" trocado por "Rubiana test network: the coins have no value."; mensagem padrão do regtest sem preço do BTC (regtest antiga, se existir, precisa ser apagada). Docs conferidas: SECURITY.md e ANUNCIO-TESTNET.md ok; README e NO-DE-ENTRADA corrigidos (blocos de comando com recuo, sem cercas aninhadas). Release do Windows: workflow aceita etiqueta (tag) e gera SHA256SUMS.txt, ainda NÃO disparada.
 - 08/11/2026: BLOCO INICIAL DEFINITIVO DA REDE PRINCIPAL: nonce 161, hash bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677, merkle 16e00f91860774936d38de8e4c628d0fa4f44cbc5156e09ec749e63da424f798, hora 1797087600 (12/12/2026 15:00:00 UTC), mensagem "CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins". Dificuldade inicial 0x1e400000 (262.144 tentativas por bloco). Substitui o bloco provisório 5b73b232... Conferido ligando um nó de rede principal (hash, hora, nonce e mensagem). Commit 4e0b4aa903. A rede de teste não mudou.
 - 11/11/2026: guia de revisao (docs/REVISAO.md), pacote da rede principal (opcao "rede" no workflow Compilar Windows, LEIA-ME proprio em packaging/windows-principal) e rascunho do anuncio (docs/ANUNCIO-PRINCIPAL.md) enviados (commit 30e6193599). Pendente: largada justa (limite de horario dos blocos na rede principal e minerador que espera 15:00 UTC), NOS_PRINCIPAL, nos da rede principal no Railway, ensaio final, Release da rede principal.
+
+## ATUALIZAÇÃO (10/11 a 14/11/2026): histórico complementar
+(Nada acima foi apagado. Onde uma nota antiga ficou desatualizada, vale a entrada mais nova. Exemplo: a mensagem do bloco inicial da rede principal é a de 08/11/2026, não a do começo deste arquivo.)
+- 06/11/2026: testes unitários herdados do Bitcoin Core: 131 das 157 suítes passam e 26 falham, todas listadas e explicadas em docs/TESTES.md (3 ainda em investigação).
+- 10/11/2026: docs/REVISAO.md, guia para quem vai revisar o código (27 arquivos alterados fora do RandomX), commit 0563dbc015. A pasta src/randomx tem a licença própria do RandomX (BSD).
+- 11/11/2026: o workflow Compilar Windows ganhou a escolha de rede (testnet ou principal), com LEIA-ME próprio da rede principal, marca de versão final (IS_RELEASE) e a licença do RandomX dentro do pacote. Rascunho do anúncio em docs/ANUNCIO-PRINCIPAL.md.
+- 11/11/2026: o nó da rede principal não ligava no Windows por causa de dados antigos de um teste de outubro (bloco inicial provisório: "Incorrect or no genesis block found"). Depois de apagar blocks, chainstate e indexes da pasta de dados, ligou de primeira e também ao reiniciar. O primeiro palpite (a checagem de "bloco do futuro") não era a causa observada, mas ela também poderia impedir reiniciar o nó antes de 12/12 e foi corrigida por precaução.
+- 11/11/2026 (commit f11d4f5443): MAX_FUTURE_BLOCK_TIME passou de 2 horas para 10 minutos (src/chain.h) e a checagem de "bloco do futuro" ignora o bloco inicial (src/node/chainstate.cpp). Motivo: o bloco inicial da rede principal tem hora marcada (12/12/2026, 15:00 UTC); com 2 horas alguém poderia preparar cerca de 24 blocos escondidos antes da largada, com 10 minutos a vantagem cai para 2 ou 3 blocos. Não chega a zero, e isso será dito no anúncio.
+- 11/11 a 12/11/2026 (commits 75cad8c9ea, 5daca6ce61, b0bf14421a): o minerador oficial espera a hora do bloco inicial (programas de terceiros não são obrigados a isso); o programa aparece como "rubianad (Rubiana node...)" no Firewall do Windows; LEIA-ME da rede principal com avisos de firewall, relógio e conexões. Pacote da rede principal testado em Windows real: o nó liga, a carteira de 12 palavras é criada e o minerador mostra a contagem até o início.
+- 13/11/2026: convite de revisão em português e inglês (docs/CONVITE-REVISAO.md, commit c0e699c2db) e nó de entrada da rede principal preparado, sem publicar (deploy/no-principal, workflow publicar-no-principal.yml, imagem rubiana-no:principal1, porta 8686; commit 343b3ec2df). Um commit feito por engano com comandos antigos foi desfeito (revert a9c19bf75b); nada foi perdido.
+- 14/11/2026: testes unitários repetidos depois das mudanças de consenso: 131 passam, 26 falham (igual a antes). README atualizado (commit ce339a8d1b). Ferramenta de relógio simulado (faketime) instalada para o ensaio da largada.
+
+## DECISÕES E PLANO (13/11 a 14/11/2026)
+- Revisão aberta: convite por volta de 18 a 20/11; achados até 6/12; código congelado por volta de 8/12 (depois só correção de erro grave); Release final da rede principal entre 5 e 8/12.
+- Reinício da rede: só como ÚLTIMA hipótese, se a cadeia ficar permanentemente quebrada e não houver correção por nova versão do programa. Será dito no anúncio.
+- O PROJETO.md continua público, como histórico: só se acrescenta, nada é removido.
+- Nó de entrada de outra pessoa: o criador procura um voluntário (pode ser a conta própria dele no Railway, com a imagem rubiana-no:principal1).
+- Android: previsto logo depois do lançamento (o lançamento inicial é só com PC); ainda não iniciado.
+
+## PENDÊNCIAS ANTES DE 12/12 (pente fino de 14/11/2026)
+- [ ] Ensaio da largada com relógio simulado (2 nós, blocos reais da rede principal, incluindo a virada de época da chave do RandomX, 9 h depois da largada: 13/12 às 00:00 UTC)
+- [ ] Restaurar carteira pela frase na rede principal (derivação 8686) e conferir o endereço
+- [ ] Conferir a lista completa do SLIP-44 por 8686
+- [ ] Linha de versão: tirar "bitcoind" e trocar o link do código-fonte
+- [ ] Antivírus (VirusTotal) e assinatura oficial do Python embutido
+- [ ] Nós de entrada da rede principal (2 no Railway, 1 de outra pessoa), preencher NOS_PRINCIPAL, imagem pública
+- [ ] Release final com etiqueta e SHA256SUMS.txt; teste do pacote por outra pessoa
+- [ ] Roteiro do dia 12/12; verificação em duas etapas da conta do GitHub; consulta sobre a parte legal
+- [ ] Limpezas: /data/testnet3 no Railway, rubiana-search.cpp e solo v1; 3 suítes de teste em investigação
