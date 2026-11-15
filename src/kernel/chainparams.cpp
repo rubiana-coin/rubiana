@@ -188,7 +188,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = GenesisFixo(CreateGenesisBlock(1797087600, 0, 0x2000ffff, 1, 86 * COIN, "CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins"), 161, "bbbc5c41c749213b84e0d846aafa18720144dff411b87c122ac48d1715fb4677", "principal");
+        genesis = GenesisFixo(CreateGenesisBlock(1797087600, 0, 0x2000ffff, 1, 86 * COIN, "CNN 30/Oct/2026 Hackers just stole $6 billion in crypto | Not your keys, not your coins"), 202, "4639c99ad5d99bb4ebc8f5bb0574df0555115ded61fa67da08cea705a5ec043f", "principal");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         // Note that of those which support the service bits prefix, most only support a subset of
@@ -273,7 +273,7 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = GenesisFixo(CreateGenesisBlock(1793577600, 0, 0x2000ffff, 1, 86 * COIN, "02/Nov/2026 Rubiana rede de teste | Mineracao para todos, na palma da mao"), 175, "10029bed7cd8adf6ab7a04353df2e64f5620611565bc629c2790cb2c3a060706", "teste");
+        genesis = GenesisFixo(CreateGenesisBlock(1793577600, 0, 0x2000ffff, 1, 86 * COIN, "02/Nov/2026 Rubiana rede de teste | Mineracao para todos, na palma da mao"), 44, "27a84e41133620ddda6c86b7f3787212da6b58cb2fd1091f3a64de2e57e4642c", "teste");
         consensus.hashGenesisBlock = genesis.GetHash();
 
         vFixedSeeds.clear();
