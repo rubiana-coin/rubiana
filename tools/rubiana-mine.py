@@ -13,7 +13,7 @@ import time
 # No de entrada da rede de teste (ponto de encontro dos mineradores)
 NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805"]
 # Nos de entrada da rede principal (preencher antes do lancamento)
-NOS_PRINCIPAL = []
+NOS_PRINCIPAL = ["viaduct.proxy.rlwy.net:27574", "switchback.proxy.rlwy.net:29538"]
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
