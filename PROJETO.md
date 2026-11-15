@@ -199,3 +199,14 @@ Projeto:
 ## ATUALIZAÇÃO (15/11/2026)
 - 15/11/2026: ENSAIO DA LARGADA CONCLUÍDO. Rede principal no Codespace, relógio simulado em 12/12/2026 a partir de 23:55 UTC, dois nós locais independentes: 6 blocos minerados (cerca de 600 H/s, modo completo, 2 núcleos) e aceitos pelo nó vizinho, sem erros nos logs. A virada da chave do RandomX (época 10399 para 10400, em 13/12 às 00:00 UTC) foi atravessada: bloco 1 às 23:55:35 e bloco 2 às 00:01:40. Dificuldade 1e400000 nos blocos 1 a 5 e primeiro ajuste do LWMA no bloco 6 (1e4e7324). Para simular o relógio: faketime -m --exclude-monotonic, só nos nós (não no Python) e sem a opção -daemon.
 - 15/11/2026: as 3 suítes em investigação (miner_tests, validation_chainstate_tests, validation_chainstatemanager_tests) falham em poucos segundos com código 201 (falha de asserção, não travamento).
+
+## PRÓXIMOS PASSOS (registrado em 15/11/2026)
+- 15/11: criar as contas do Matrix e do Bitcointalk; ativar a verificação em duas etapas do GitHub; conferir o relato privado de vulnerabilidades; novo pacote da rede principal (workflow Compilar Windows) em andamento.
+- 16/11: testar restaurar a carteira pela frase no Windows (rede principal); enviar o pacote ao VirusTotal; ler os logs das 3 suítes de teste em investigação.
+- 17/11: revisão final do convite e do README; conferir que o repositório abre sem login.
+- 18 a 20/11: publicar o convite de revisão (Matrix/Monero, repositório do Zawy, Bitcointalk).
+- 20/11 a 5/12: responder revisores e corrigir achados; escrever o roteiro do dia 12/12; achar um voluntário para o nó de entrada.
+- 1 a 5/12: nós de entrada da rede principal no Railway (imagem rubiana-no:principal1) e preencher NOS_PRINCIPAL.
+- 6/12: prazo para os achados. 8/12: código congelado. 8 a 10/12: Release final com SHA256SUMS.txt, teste por outra pessoa e VirusTotal final.
+- 11/12: roteiro e checklist finais. 12/12 às 12:00 em Brasília (15:00 UTC): largada.
+- Depois do lançamento: app de Android, pool, carteira leve, explorador público e registro do tipo de moeda 8686 no SLIP-44.
