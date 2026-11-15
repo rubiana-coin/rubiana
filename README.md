@@ -2,7 +2,7 @@
 
 Moeda digital experimental, de código aberto, derivada do Bitcoin Core, com mineração por prova de trabalho (RandomX) pensada para computadores comuns e, no futuro, celulares.
 
-**STATUS: rede de teste em preparação.** A rede principal (mainnet) ainda NÃO foi lançada. As moedas da rede de teste não têm valor. Software experimental, sem garantias.
+**STATUS: a rede principal começa em 12/12/2026, às 15:00 UTC (12:00 em Brasília).** Antes disso só existe a rede de teste, cujas moedas não têm valor. Software experimental, **sem auditoria externa** e sem garantias. Quer ajudar a revisar o código? Veja [docs/CONVITE-REVISAO.md](docs/CONVITE-REVISAO.md), o guia [docs/REVISAO.md](docs/REVISAO.md) e o estado dos testes em [docs/TESTES.md](docs/TESTES.md).
 
 ## Parâmetros
 
@@ -13,6 +13,7 @@ Moeda digital experimental, de código aberto, derivada do Bitcoin Core, com min
 | Dificuldade | ajustada a cada bloco (LWMA, janela de 60 blocos) |
 | Recompensa inicial | 86 moedas por bloco |
 | Halving | a cada 500.000 blocos (cerca de 4,8 anos) |
+| Horário dos blocos | no máximo 10 minutos à frente do relógio do nó (Bitcoin: 2 horas) |
 | Total de moedas | 86.000.000 |
 | Endereços | começam com `rubia1` (rede de teste: `trubia1`) |
 | Portas | P2P 8686 (teste: 18686), RPC 8690 (teste: 18690) |
@@ -26,7 +27,7 @@ Moeda digital experimental, de código aberto, derivada do Bitcoin Core, com min
 
 ## Como testar
 
-**Windows:** um pacote de clique duplo (`minerar.bat`), que será publicado na página de Releases.
+**Windows:** um pacote de clique duplo (`janela.bat`, com minerar, carteira e blocos), na página de Releases. O pacote da rede principal sai em dezembro.
 
 **Linux (compilando):**
 
