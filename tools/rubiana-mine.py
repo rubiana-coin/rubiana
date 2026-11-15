@@ -11,7 +11,7 @@ import sys
 import time
 
 # No de entrada da rede de teste (ponto de encontro dos mineradores)
-NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805", "iriguchi.proxy.rlwy.net:57877"]
+NOS_DE_ENTRADA = ["acela.proxy.rlwy.net:11805"]
 # Nos de entrada da rede principal (preencher antes do lancamento)
 NOS_PRINCIPAL = []
 
