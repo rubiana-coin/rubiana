@@ -52,6 +52,10 @@ AVISOS
    assinado digitalmente. Para abrir: "Mais informacoes", "Executar
    assim mesmo". Confira antes o SHA-256 do .zip na pagina da Release.
  - Antivirus podem marcar programas de mineracao como suspeitos.
+   Se um antivirus bloquear o arquivo rubiana-miner.exe (deteccao generica,
+   por ele gerar codigo durante a execucao), confira o SHA-256 do .zip na
+   pagina da Release e, so se confiar, libere a pasta do programa no
+   antivirus. O programa e de codigo aberto: github.com/rubiana-coin/rubiana
  - O seu endereco IP fica visivel para os nos aos quais voce conecta.
  - Minerar esquenta o computador e gasta energia. Use so metade dos
    nucleos se o computador ficar quente ou lento.
