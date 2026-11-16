@@ -64,6 +64,12 @@ class MainActivity : Activity() {
         }
         raiz.addView(linha)
 
+        val botaoLongo = Button(this)
+        botaoLongo.text = "Teste longo: 5 minutos, 8 núcleos"
+        botaoLongo.setOnClickListener { medir(8, 5) }
+        botoes.add(botaoLongo)
+        raiz.addView(botaoLongo)
+
         val botaoParar = Button(this)
         botaoParar.text = "Parar o teste"
         botaoParar.setOnClickListener { pedidoParar = true }
@@ -107,14 +113,14 @@ class MainActivity : Activity() {
         return Pair(temp, nivel)
     }
 
-    private fun medir(threads: Int) {
+    private fun medir(threads: Int, minutos: Int = 0) {
         if (medindo) return
         medindo = true
         pedidoParar = false
         runOnUiThread { botoes.forEach { it.isEnabled = false } }
         Thread {
             try {
-                executarTeste(threads)
+                executarTeste(threads, minutos)
             } catch (e: Exception) {
                 escrever("  erro: ${e.javaClass.simpleName}: ${e.message}")
             } finally {
@@ -126,7 +132,7 @@ class MainActivity : Activity() {
         }.start()
     }
 
-    private fun executarTeste(threads: Int) {
+    private fun executarTeste(threads: Int, minutos: Int) {
         val (tempIni, nivelIni) = bateria()
         escrever("== Teste com $threads thread(s) ==")
         escrever("Preparando o motor (pode levar alguns segundos)...")
@@ -207,6 +213,27 @@ class MainActivity : Activity() {
         }
 
         if (!esperar(6)) return
+        if (minutos > 0) {
+            escrever("Teste longo: $minutos minuto(s), uma medida a cada 30 s.")
+            var anterior: Pair<Long, Double> = estatistica() ?: run {
+                escrever("  falhou: o motor não respondeu ao STATS.")
+                return
+            }
+            for (k in 1..(minutos * 2)) {
+                if (!esperar(30)) return
+                val atual = estatistica() ?: break
+                val dt = atual.second - anterior.second
+                val taxaK = if (dt > 0.0) (atual.first - anterior.first) / dt else 0.0
+                val (tK, nK) = bateria()
+                escrever("  +" + (k * 30) + " s: " + String.format("%.1f", taxaK) + " H/s, " + tK + " °C, carga " + nK + "%")
+                anterior = atual
+            }
+            enviar("QUIT")
+            p.waitFor(5, TimeUnit.SECONDS)
+            escrever("Fim do teste longo.")
+            escrever("")
+            return
+        }
         val a = estatistica()
         if (a == null) {
             escrever("  falhou: o motor não respondeu ao STATS.")
