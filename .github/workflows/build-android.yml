@@ -31,6 +31,8 @@ jobs:
           "$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang++" -O2 -std=c++17 -o android/app/src/main/jniLibs/arm64-v8a/libminer.so tools/rubiana-miner.cpp -I src/randomx/src "$LIB" -static-libstdc++
           file android/app/src/main/jniLibs/arm64-v8a/libminer.so
           ls -l android/app/src/main/jniLibs/arm64-v8a/
+      - name: Testes da carteira (BIP39, BIP32 e enderecos)
+        run: gradle -p android testDebugUnitTest --no-daemon --stacktrace
       - name: Compilar o APK
         run: gradle -p android assembleDebug --no-daemon --stacktrace
       - name: Guardar o APK

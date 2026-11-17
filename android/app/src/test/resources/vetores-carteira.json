@@ -1,0 +1,85 @@
+{
+ "vetores": [
+  {
+   "entropia_hex": "00000000000000000000000000000000",
+   "frase": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+   "semente_hex": "5eb00bbddcf069084889a8ab9155568165f5c453ccb85e70811aaed6f6da5fc19a5ac40b389cd370d086206dec8aa6c43daea6690f20ad3d8d48b2d2ce9e38e4",
+   "principal": {
+    "externos": [
+     "rubia1qctettux2y2hjxkfj5k3jf0zfu3qgtes3j8l9y5",
+     "rubia1qqptwc4j0h7e9umhw3pm3s5s9geewvtvd04u9h9",
+     "rubia1qqya5wd7r4qsv6062axvdsm7q76u7qqpsaf2fh7"
+    ],
+    "troco": [
+     "rubia1qcu4h3dmk7eer4x7l98v5hjlwte2kpx42qx3nc5",
+     "rubia1qfe7yka6svh0anxp8v45vcp2y9k86mldh7t95wh"
+    ]
+   },
+   "testnet": {
+    "externos": [
+     "trubia1q6rz28mcfaxtmd6v789l9rrlrusdprr9pfnl3xq",
+     "trubia1qd7spv5q28348xl4myc8zmh983w5jx32cmugw4p",
+     "trubia1qxdyjf6h5d6qxap4n2dap97q4j5ps6ua8e5pjg5"
+    ],
+    "troco": [
+     "trubia1q9u62588spffmq4dzjxsr5l297znf3z6ja258hc",
+     "trubia1qkwgskuzmmwwvqajnyr7yp9hgvh5y45kgw9jstj"
+    ]
+   }
+  },
+  {
+   "entropia_hex": "7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f",
+   "frase": "legal winner thank year wave sausage worth useful legal winner thank yellow",
+   "semente_hex": "878386efb78845b3355bd15ea4d39ef97d179cb712b77d5c12b6be415fffeffe5f377ba02bf3f8544ab800b955e51fbff09828f682052a20faa6addbbddfb096",
+   "principal": {
+    "externos": [
+     "rubia1q3ygn68aj74vrd7wlf5knd7sx4lupnyz0m7qt6g",
+     "rubia1q5juum3je3h3yg76v8dt7sugkh9mrcunzh9xccg",
+     "rubia1qv6mcztqa6u4ny8903lwuz2raz2gryc8mjq7qea"
+    ],
+    "troco": [
+     "rubia1q75rzgn8dpn7wt8tp9njkvg9q00zzazyslmqxe5",
+     "rubia1q40ld7kdyg8updtttkjhj3cn2ykuu7k5ynfjqrh"
+    ]
+   },
+   "testnet": {
+    "externos": [
+     "trubia1qjgx204hxfwuse548jc34fjzg6ffq8pvrf9pyk2",
+     "trubia1qdz087gr9rthdz0uu5pekjuc7ada86d95qsfs8s",
+     "trubia1qurg4y55dpv5z80yhgmjqq6gw83gujt5rplu7pl"
+    ],
+    "troco": [
+     "trubia1qmapywu8v8uztsqk4j8f5sarjzm2j9r046vpqvn",
+     "trubia1qeatvu72kycj89p76z49qk64qg96dctnanj2cd8"
+    ]
+   }
+  },
+  {
+   "entropia_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+   "frase": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art",
+   "semente_hex": "408b285c123836004f4b8842c89324c1f01382450c0d439af345ba7fc49acf705489c6fc77dbd4e3dc1dd8cc6bc9f043db8ada1e243c4a0eafb290d399480840",
+   "principal": {
+    "externos": [
+     "rubia1qsyw3ucukh22r5z0v8annect7rk4f6r88jgnpc4",
+     "rubia1qa8fsndkuxxx2uwrzeecsuvwhwmeyqnjyy0wcyg",
+     "rubia1qfg4e8ax0sfxce4ms8n8knhuc4m4ejgkay2msqa"
+    ],
+    "troco": [
+     "rubia1qkyzk2hdy3ngsqf6qxz06scrpyxlw46k2nwasaz",
+     "rubia1qkqu7e2crfelyyvzwf0rsark775zztms6u7z7f8"
+    ]
+   },
+   "testnet": {
+    "externos": [
+     "trubia1qtk89me2ae95dmlp3yfl4q9ynpux8mxjumhhheu",
+     "trubia1qgadxe2kacxtw44un284vskrn6w2xgsmmhu52eh",
+     "trubia1qkmq5vclvgp022zg00r6w8k36s9nnysgeak2xhw"
+    ],
+    "troco": [
+     "trubia1qzdyh2wphj7ssggzdj92hkf9nx65slx8r0e27ed",
+     "trubia1qtwy8w4alqlwdu3pk07kdxtwm0enrac8qvju75n"
+    ]
+   }
+  }
+ ]
+}
