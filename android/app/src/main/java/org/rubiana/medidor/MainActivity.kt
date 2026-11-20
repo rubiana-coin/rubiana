@@ -46,6 +46,11 @@ class MainActivity : Activity() {
         titulo.setTypeface(null, Typeface.BOLD)
         raiz.addView(titulo)
 
+        val botaoCarteira = Button(this)
+        botaoCarteira.text = "Carteira Rubiana"
+        botaoCarteira.setOnClickListener { startActivity(Intent(this, CarteiraActivity::class.java)) }
+        raiz.addView(botaoCarteira)
+
         val aviso = TextView(this)
         aviso.text = "Mede quantos hashes por segundo este celular faz com o RandomX (modo leve). " +
             "Cada teste dura cerca de 30 segundos. Deixe o celular carregando, fora do sol e sem capa grossa. " +
